@@ -90,15 +90,9 @@ tailwind.config = {
 <!-- Header + Filter (sticky together) -->
 <header class="sticky top-0 w-full z-50 bg-[#fcf9f1]/80 backdrop-blur-xl">
     <div class="flex flex-col px-4 sm:px-6 py-3 sm:py-4 max-w-screen-xl mx-auto">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 sm:gap-3">
-                <span class="material-symbols-outlined text-primary text-2xl sm:text-3xl">park</span>
-                <h1 class="text-primary font-headline font-extrabold text-lg sm:text-2xl tracking-tight leading-tight">Velké Hamry</h1>
-            </div>
-            <button onclick="shareRoom()" class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold hover:bg-surface-container-highest active:scale-95 transition-all">
-                <span class="material-symbols-outlined text-sm">share</span>
-                <span id="room-label"></span>
-            </button>
+        <div class="flex items-center gap-2 sm:gap-3">
+            <span class="material-symbols-outlined text-primary text-2xl sm:text-3xl">park</span>
+            <h1 class="text-primary font-headline font-extrabold text-lg sm:text-2xl tracking-tight leading-tight">Velké Hamry</h1>
         </div>
         <p class="text-on-surface-variant text-[11px] sm:text-sm mt-0.5 font-medium opacity-80" data-i18n="header.subtitle"></p>
     </div>
@@ -964,7 +958,17 @@ const TIPS = {
 
 function renderTips() {
     const catColors = { safety: 'tertiary', packing: 'primary', local: 'secondary' };
-    let html = `<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mb-5 flex items-center gap-3">
+    let html = `<div class="flex items-center justify-between bg-surface-container-lowest rounded-2xl p-4 mb-6">
+        <div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${currentLang === 'cs' ? 'Sdílený plán' : 'Shared plan'}</p>
+            <p class="text-xs text-on-surface-variant">${currentLang === 'cs' ? 'Kód místnosti:' : 'Room code:'} <span class="font-bold text-on-surface" id="room-label">${ROOM}</span></p>
+        </div>
+        <button onclick="shareRoom()" class="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-on-primary text-xs font-bold hover:opacity-90 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-sm">share</span>
+            ${currentLang === 'cs' ? 'Sdílet' : 'Share'}
+        </button>
+    </div>
+    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mb-5 flex items-center gap-3">
         ${t('tips.title')}<span class="h-px flex-1 bg-outline-variant/20"></span></h2>`;
 
     for (const [catKey, cat] of Object.entries(TIPS)) {
