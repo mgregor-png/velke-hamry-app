@@ -662,9 +662,6 @@ function renderCard(c) {
             <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="${c.link}" target="_blank">
                 <span class="material-symbols-outlined text-sm">map</span> ${c.isSearch ? t('btn.search') : t('btn.mapy')}
             </a>
-            <a class="w-full bg-surface-container-high text-on-surface py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs mt-2 hover:bg-surface-container-highest transition-all active:scale-[0.98]" href="https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}" target="_blank">
-                <span class="material-symbols-outlined text-sm">navigation</span> ${currentLang === 'cs' ? 'Navigovat' : 'Navigate'}
-            </a>
         </div>
     </div>`;
 }
