@@ -182,7 +182,6 @@ const T = {
         'detail.time': 'Délka návštěvy', 'detail.food': 'Jídlo', 'detail.warnings': 'Pozor',
         'detail.bestTime': 'Nejlepší čas', 'detail.web': 'Web',
         'meal.breakfast': 'Snídaně', 'meal.snack': 'Svačina', 'meal.lunch': 'Oběd/večeře',
-        'meal.home': 'Doma', 'meal.out': 'Venku',
         'prep.title': 'Příprava na výlet', 'prep.packing': 'Co sbalit', 'prep.shopping': 'Nákupní seznam',
         'prep.packed': 'Sbaleno',
         'tips.title': 'Tipy od profíků',
@@ -205,8 +204,7 @@ const T = {
         'detail.hours': 'Hours', 'detail.parking': 'Parking', 'detail.fee': 'Entry fee',
         'detail.time': 'Time needed', 'detail.food': 'Food', 'detail.warnings': 'Heads up',
         'detail.bestTime': 'Best time', 'detail.web': 'Website',
-        'meal.breakfast': 'Breakfast', 'meal.snack': 'Trail snack', 'meal.lunch': 'Lunch/dinner',
-        'meal.home': 'At home', 'meal.out': 'Eating out',
+        'meal.breakfast': 'Breakfast', 'meal.snack': 'Snack', 'meal.lunch': 'Lunch/dinner',
         'prep.title': 'Trip Preparation', 'prep.packing': 'Packing List', 'prep.shopping': 'Shopping List',
         'prep.packed': 'Packed',
         'tips.title': 'Expert Family Tips',
@@ -725,55 +723,68 @@ function renderCards() {
 }
 
 // Meal suggestions based on day plan
-const BREAKFASTS = {
-    cs: ['Ovesná kaše s ovocem', 'Vejce s chlebem a šunkou', 'Palačinky'],
-    en: ['Oatmeal with fruit', 'Eggs with bread & ham', 'Pancakes']
+// Meal options per type
+const MEAL_OPTIONS = {
+    breakfast: [
+        { cs: 'Ovesná kaše s ovocem', en: 'Oatmeal with fruit' },
+        { cs: 'Vejce s chlebem a šunkou', en: 'Eggs with bread & ham' },
+        { cs: 'Palačinky', en: 'Pancakes' },
+        { cs: 'Jogurt s müsli', en: 'Yogurt with granola' },
+        { cs: 'Toasty se sýrem', en: 'Cheese toasts' },
+    ],
+    snack: [
+        { cs: 'Chleba se šunkou + ovoce', en: 'Bread & ham + fruit' },
+        { cs: 'Ořechy + tyčinky + ovoce', en: 'Nuts + bars + fruit' },
+        { cs: 'Wrapy se sýrem a zeleninou', en: 'Cheese & veggie wraps' },
+        { cs: 'Krekry + hummus + mrkev', en: 'Crackers + hummus + carrots' },
+        { cs: '—', en: '—' },
+    ],
+    lunch: [
+        { cs: 'Vaříme doma — těstoviny', en: 'Cook at home — pasta' },
+        { cs: 'Vaříme doma — kuře s rýží', en: 'Cook at home — chicken & rice' },
+        { cs: 'Vaříme doma — salát', en: 'Cook at home — salad' },
+        { cs: 'Vaříme doma — rizoto', en: 'Cook at home — risotto' },
+        { cs: 'Restaurace venku', en: 'Restaurant / eating out' },
+        { cs: 'Gril / špekáčky', en: 'BBQ / sausages' },
+        { cs: '—', en: '—' },
+    ]
 };
-const SNACKS = {
-    cs: ['Chleba se šunkou, ovoce, ořechy, tyčinky'],
-    en: ['Bread & ham, fruit, nuts, bars']
-};
 
-function getMealSuggestion(day, cards) {
-    const isOutdoor = cards.some(c => ['recommended','daytrips','unique'].includes(c.category));
-    const isLiberec = cards.some(c => c[currentLang].loc.includes('Liberec'));
-    const hasRestaurant = cards.some(c => c[currentLang].details && c[currentLang].details.food && !c[currentLang].details.food.includes('nic') && !c[currentLang].details.food.includes('Nothing'));
+function getMealForDay(day, mealType) {
+    const ud = ensureUserData();
+    if (!ud.meals) ud.meals = {};
+    if (!ud.meals[day]) ud.meals[day] = {};
+    return ud.meals[day][mealType] ?? null; // null = not yet selected
+}
 
-    const bIdx = ['thu','fri','sat','sun','mon'].indexOf(day) % BREAKFASTS.cs.length;
-    const breakfast = currentLang === 'cs' ? BREAKFASTS.cs[bIdx] : BREAKFASTS.en[bIdx];
-    const snack = currentLang === 'cs' ? SNACKS.cs[0] : SNACKS.en[0];
+function setMeal(day, mealType, idx) {
+    const ud = ensureUserData();
+    if (!ud.meals) ud.meals = {};
+    if (!ud.meals[day]) ud.meals[day] = {};
+    ud.meals[day][mealType] = idx === '' ? null : parseInt(idx);
+    saveUserData(ud);
+    renderPlanner();
+}
 
-    let lunch;
-    if (cards.length === 0) {
-        lunch = currentLang === 'cs' ? '🍳 Vaříme doma — těstoviny, kuře, salát' : '🍳 Cook at home — pasta, chicken, salad';
-    } else if (isLiberec) {
-        lunch = currentLang === 'cs' ? '🍽️ Oběd v Liberci (restaurace)' : '🍽️ Lunch in Liberec (restaurant)';
-    } else if (hasRestaurant) {
-        const rest = cards.find(c => c[currentLang].details && c[currentLang].details.food && !c[currentLang].details.food.includes('nic'));
-        lunch = currentLang === 'cs' ? `🍽️ ${rest[currentLang].details.food.split('.')[0]}` : `🍽️ ${rest[currentLang].details.food.split('.')[0]}`;
-    } else if (isOutdoor) {
-        lunch = currentLang === 'cs' ? '🍳 Vaříme doma po výletě' : '🍳 Cook at home after the trip';
-    } else {
-        lunch = currentLang === 'cs' ? '🍳 Vaříme doma' : '🍳 Cook at home';
-    }
-    return { breakfast, snack: isOutdoor || cards.length > 0 ? snack : null, lunch };
+function renderMealSelect(day, mealType, icon) {
+    const options = MEAL_OPTIONS[mealType];
+    const selected = getMealForDay(day, mealType);
+    const label = t('meal.' + mealType);
+    return `<div class="flex items-center gap-2">
+        <span class="text-[10px] flex-shrink-0">${icon}</span>
+        <span class="text-[10px] text-on-surface-variant flex-shrink-0">${label}</span>
+        <select onchange="setMeal('${day}','${mealType}',this.value)" class="flex-1 text-[11px] font-medium bg-surface-container-lowest text-on-surface px-2 py-1 rounded-lg border-0 appearance-none cursor-pointer truncate" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 4px center; padding-right: 18px; min-width: 0;">
+            <option value="" ${selected === null ? 'selected' : ''}>—</option>
+            ${options.map((o, i) => `<option value="${i}" ${selected === i ? 'selected' : ''}>${o[currentLang]}</option>`).join('')}
+        </select>
+    </div>`;
 }
 
 function renderMealPlan(day, cards) {
-    const m = getMealSuggestion(day, cards);
-    return `<div class="mt-3 pt-3 space-y-1">
-        <div class="flex items-center gap-2">
-            <span class="text-[10px]">☀️</span>
-            <span class="text-[10px] text-on-surface-variant">${t('meal.breakfast')}: <span class="text-on-surface font-medium">${m.breakfast}</span></span>
-        </div>
-        ${m.snack ? `<div class="flex items-center gap-2">
-            <span class="text-[10px]">🎒</span>
-            <span class="text-[10px] text-on-surface-variant">${t('meal.snack')}: <span class="text-on-surface font-medium">${m.snack}</span></span>
-        </div>` : ''}
-        <div class="flex items-center gap-2">
-            <span class="text-[10px]">🍽️</span>
-            <span class="text-[10px] text-on-surface-variant">${t('meal.lunch')}: <span class="text-on-surface font-medium">${m.lunch}</span></span>
-        </div>
+    return `<div class="mt-3 pt-3 space-y-1.5">
+        ${renderMealSelect(day, 'breakfast', '☀️')}
+        ${renderMealSelect(day, 'snack', '🎒')}
+        ${renderMealSelect(day, 'lunch', '🍽️')}
     </div>`;
 }
 
