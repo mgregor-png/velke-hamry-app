@@ -1296,10 +1296,10 @@ function shareRoom() {
         navigator.share({ title: 'Velké Hamry — Trip Planner', url });
     } else if (navigator.clipboard) {
         navigator.clipboard.writeText(url).then(() => {
-            const label = document.getElementById('room-label');
-            const orig = label.textContent;
-            label.textContent = currentLang === 'cs' ? 'Zkopírováno!' : 'Copied!';
-            setTimeout(() => { label.textContent = orig; }, 2000);
+            const btn = event.currentTarget;
+            const orig = btn.innerHTML;
+            btn.innerHTML = `<span class="material-symbols-outlined text-sm">check</span> ${currentLang === 'cs' ? 'Zkopírováno!' : 'Copied!'}`;
+            setTimeout(() => { btn.innerHTML = orig; }, 2000);
         });
     }
 }
@@ -1307,7 +1307,6 @@ function shareRoom() {
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
-document.getElementById('room-label').textContent = ROOM;
 renderAll();
 loadWeather();
 </script>
