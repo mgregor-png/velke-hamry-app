@@ -9,6 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
 tailwind.config = {
     darkMode: "class",
@@ -88,9 +90,15 @@ tailwind.config = {
 <!-- Header + Filter (sticky together) -->
 <header class="sticky top-0 w-full z-50 bg-[#fcf9f1]/80 backdrop-blur-xl">
     <div class="flex flex-col px-4 sm:px-6 py-3 sm:py-4 max-w-screen-xl mx-auto">
-        <div class="flex items-center gap-2 sm:gap-3">
-            <span class="material-symbols-outlined text-primary text-2xl sm:text-3xl">park</span>
-            <h1 class="text-primary font-headline font-extrabold text-lg sm:text-2xl tracking-tight leading-tight">Velké Hamry</h1>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <span class="material-symbols-outlined text-primary text-2xl sm:text-3xl">park</span>
+                <h1 class="text-primary font-headline font-extrabold text-lg sm:text-2xl tracking-tight leading-tight">Velké Hamry</h1>
+            </div>
+            <button onclick="shareRoom()" class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold hover:bg-surface-container-highest active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-sm">share</span>
+                <span id="room-label"></span>
+            </button>
         </div>
         <p class="text-on-surface-variant text-[11px] sm:text-sm mt-0.5 font-medium opacity-80" data-i18n="header.subtitle"></p>
     </div>
@@ -674,13 +682,83 @@ function renderDetailRow(icon, label, value) {
 }
 
 // ═══════════════════════════════════════════════════
-// USER DATA (localStorage)
+// FIREBASE + COLLABORATIVE DATA
 // ═══════════════════════════════════════════════════
-function getUserData() {
-    try { return JSON.parse(localStorage.getItem('vh-planner') || '{}'); } catch { return {}; }
+firebase.initializeApp({
+    apiKey: "AIzaSyDSu8kBXFbWID6pc9mT31hK-5tDUmYYpBY",
+    authDomain: "velke-hamry.firebaseapp.com",
+    databaseURL: "https://velke-hamry-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "velke-hamry",
+    storageBucket: "velke-hamry.firebasestorage.app",
+    messagingSenderId: "1048141729853",
+    appId: "1:1048141729853:web:ae98f98691191654c55a54"
+});
+
+// Room system — share the same URL param to collaborate
+function getRoomId() {
+    const params = new URLSearchParams(window.location.search);
+    let room = params.get('room');
+    if (!room) {
+        // Check localStorage for last room
+        room = localStorage.getItem('vh-room');
+    }
+    if (!room) {
+        room = Math.random().toString(36).substring(2, 8);
+    }
+    // Persist room to URL and localStorage
+    localStorage.setItem('vh-room', room);
+    if (!params.get('room')) {
+        const url = new URL(window.location);
+        url.searchParams.set('room', room);
+        window.history.replaceState({}, '', url);
+    }
+    return room;
 }
-function saveUserData(data) { localStorage.setItem('vh-planner', JSON.stringify(data)); }
-function ensureUserData() { const d = getUserData(); if (!d.ratings) d.ratings = {}; if (!d.days) d.days = {}; saveUserData(d); return d; }
+
+const ROOM = getRoomId();
+const db = firebase.database();
+const dataRef = db.ref('rooms/' + ROOM);
+
+// Local cache of shared data
+let _sharedData = { ratings: {}, days: {}, meals: {}, packing: {} };
+let _firebaseReady = false;
+
+function getUserData() { return _sharedData; }
+function ensureUserData() {
+    if (!_sharedData.ratings) _sharedData.ratings = {};
+    if (!_sharedData.days) _sharedData.days = {};
+    if (!_sharedData.meals) _sharedData.meals = {};
+    if (!_sharedData.packing) _sharedData.packing = {};
+    return _sharedData;
+}
+function saveUserData(data) {
+    _sharedData = data;
+    // Save to Firebase (non-blocking)
+    dataRef.set(data);
+    // Also keep localStorage as offline fallback
+    localStorage.setItem('vh-planner', JSON.stringify(data));
+}
+
+// Listen for real-time changes from other users
+dataRef.on('value', (snapshot) => {
+    const val = snapshot.val();
+    if (val) {
+        _sharedData = val;
+        ensureUserData();
+    } else if (!_firebaseReady) {
+        // First load — seed from localStorage if Firebase is empty
+        try {
+            const local = JSON.parse(localStorage.getItem('vh-planner') || '{}');
+            if (local && (Object.keys(local.ratings || {}).length > 0 || Object.keys(local.days || {}).length > 0)) {
+                _sharedData = local;
+                ensureUserData();
+                dataRef.set(_sharedData);
+            }
+        } catch (e) {}
+    }
+    _firebaseReady = true;
+    renderAll();
+});
 ensureUserData();
 
 function setRating(cardId, value) {
@@ -1206,8 +1284,26 @@ function renderWeatherBadge(w) {
 }
 
 // ═══════════════════════════════════════════════════
+// SHARE / ROOM
+// ═══════════════════════════════════════════════════
+function shareRoom() {
+    const url = window.location.origin + window.location.pathname + '?room=' + ROOM;
+    if (navigator.share) {
+        navigator.share({ title: 'Velké Hamry — Trip Planner', url });
+    } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            const label = document.getElementById('room-label');
+            const orig = label.textContent;
+            label.textContent = currentLang === 'cs' ? 'Zkopírováno!' : 'Copied!';
+            setTimeout(() => { label.textContent = orig; }, 2000);
+        });
+    }
+}
+
+// ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
+document.getElementById('room-label').textContent = ROOM;
 renderAll();
 loadWeather();
 </script>
