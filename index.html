@@ -1080,7 +1080,7 @@ function renderPrep() {
                 <span class="text-sm ${ud.packing[i] ? 'line-through text-on-surface-variant' : 'text-on-surface'}">${currentLang === 'cs' ? item.cs : item.en}</span>
             </label>
         `).join('')}
-    </div>
+    </div>`;
 
     const totalShoppingItems = shoppingItems.reduce((sum, cat) => sum + cat.items.length, 0);
     const checkedShoppingItems = Object.values(ud.shopping).filter(Boolean).length;
