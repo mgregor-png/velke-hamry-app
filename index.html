@@ -85,7 +85,7 @@ tailwind.config = {
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen pb-24">
 
-<!-- Header -->
+<!-- Header + Filter (sticky together) -->
 <header class="sticky top-0 w-full z-50 bg-[#fcf9f1]/80 backdrop-blur-xl">
     <div class="flex flex-col px-4 sm:px-6 py-3 sm:py-4 max-w-screen-xl mx-auto">
         <div class="flex items-center gap-2 sm:gap-3">
@@ -94,17 +94,16 @@ tailwind.config = {
         </div>
         <p class="text-on-surface-variant text-[11px] sm:text-sm mt-0.5 font-medium opacity-80" data-i18n="header.subtitle"></p>
     </div>
+    <!-- Filter Pills (sticky with header, visible only on Map tab) -->
+    <div id="filter-section" class="overflow-x-auto hide-scrollbar px-4 sm:px-6 pb-2 max-w-screen-xl mx-auto">
+        <div class="flex gap-2 min-w-max" id="filter-bar"></div>
+    </div>
 </header>
 
 <main class="max-w-screen-xl mx-auto px-4 sm:px-6">
 
 <!-- ═══ MAP SECTION ═══ -->
 <div id="section-map" class="section active">
-
-    <!-- Filter Pills -->
-    <section class="py-3 sm:py-4 overflow-x-auto hide-scrollbar -mx-4 sm:-mx-6 px-4 sm:px-6">
-        <div class="flex gap-2 min-w-max" id="filter-bar"></div>
-    </section>
 
     <!-- Map -->
     <div class="rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] mb-6 sm:mb-8">
@@ -117,7 +116,7 @@ tailwind.config = {
 
 <!-- ═══ PLANNER SECTION ═══ -->
 <div id="section-planner" class="section">
-    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mt-6 mb-5 flex items-center gap-3">
+    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mt-6 mb-5 flex items-center gap-3">
         <span data-i18n="planner.timeline"></span>
         <span class="h-px flex-1 bg-outline-variant/20"></span>
     </h2>
@@ -589,7 +588,7 @@ function renderCard(c) {
             </div>
         </div>`;
     const isTime = d.dist.includes('h') || d.dist.includes('min');
-    return `<div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+    return `<div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] flex flex-col"
          id="card-${c.id}" data-good="${c.good}" data-bad="${c.bad}" data-stroller="${c.stroller}">
         ${imgSection}
         <div class="p-5 sm:p-6 flex-1 flex flex-col">
@@ -646,7 +645,7 @@ function renderCard(c) {
                         <a href="https://${d.details.web}" target="_blank" class="text-xs text-primary underline underline-offset-2 hover:text-primary-container">${d.details.web}</a></div>
                     </div>` : ''}
                     <!-- Day assignment inside details -->
-                    <div class="flex items-center gap-2.5 pt-2 border-t border-outline-variant/15">
+                    <div class="flex items-center gap-2.5 mt-3 pt-2">
                         <span class="material-symbols-outlined text-sm text-primary mt-0.5">event</span>
                         <div class="flex-1"><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">${t('assign')}</p>
                         <select onchange="assignDay(${c.id}, this.value)" class="text-xs font-bold bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border-0 appearance-none cursor-pointer w-full" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;">
@@ -718,7 +717,7 @@ function renderCards() {
     Object.values(cats).forEach(arr => arr.sort(sortByRating));
     let html = '';
     for (const [cat, cards] of Object.entries(cats)) {
-        html += `<h2 class="text-xl sm:text-2xl font-extrabold text-primary ${cat !== 'recommended' ? 'mt-8' : ''} mb-4 sm:mb-6 flex items-center gap-3">
+        html += `<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary ${cat !== 'recommended' ? 'mt-8' : ''} mb-4 sm:mb-6 flex items-center gap-3">
             ${t('cat.' + cat)}<span class="h-px flex-1 bg-outline-variant/20"></span></h2>`;
         html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">${cards.map(renderCard).join('')}</div>`;
     }
@@ -762,7 +761,7 @@ function getMealSuggestion(day, cards) {
 
 function renderMealPlan(day, cards) {
     const m = getMealSuggestion(day, cards);
-    return `<div class="mt-3 pt-3 border-t border-outline-variant/15 space-y-1">
+    return `<div class="mt-3 pt-3 space-y-1">
         <div class="flex items-center gap-2">
             <span class="text-[10px]">☀️</span>
             <span class="text-[10px] text-on-surface-variant">${t('meal.breakfast')}: <span class="text-on-surface font-medium">${m.breakfast}</span></span>
@@ -812,7 +811,7 @@ function renderPlanner() {
                         ${rating === 1 ? `<span class="material-symbols-outlined text-sm text-primary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_up</span>` : rating === -1 ? `<span class="material-symbols-outlined text-sm text-tertiary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_down</span>` : ''}
                     </div>`;
                 }).join('')}
-            ${w ? `<div class="flex items-center gap-1.5 mt-3 pt-3 border-t border-outline-variant/15">
+            ${w ? `<div class="flex items-center gap-1.5 mt-3 pt-3">
                 <span class="material-symbols-outlined text-base ${w.code<=2?'text-tertiary':w.code>=61?'text-primary':'text-on-surface-variant'}">${w.icon}</span>
                 <span class="text-xs font-bold text-on-surface">${w.hi}°/${w.lo}°</span>
                 <span class="text-[10px] text-on-surface-variant">${currentLang === 'cs' ? w.csLabel : w.enLabel}</span>
@@ -876,11 +875,10 @@ const TIPS = {
 
 function renderTips() {
     const catColors = { safety: 'tertiary', packing: 'primary', local: 'secondary' };
-    let html = `<h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-5 flex items-center gap-3">
+    let html = `<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mb-5 flex items-center gap-3">
         ${t('tips.title')}<span class="h-px flex-1 bg-outline-variant/20"></span></h2>`;
 
     for (const [catKey, cat] of Object.entries(TIPS)) {
-        const borderColor = catKey === 'safety' ? 'border-l-tertiary' : catKey === 'packing' ? 'border-l-primary' : 'border-l-secondary';
         html += `<div class="mb-5">
             <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.chev').classList.toggle('rotate-180')" class="flex items-center gap-2 mb-3 cursor-pointer active:scale-[0.98]">
                 <span class="material-symbols-outlined text-${catColors[catKey]} text-lg">${cat.icon}</span>
@@ -890,8 +888,11 @@ function renderTips() {
             <div class="space-y-2">
                 ${cat.tips.map(tp => {
                     const d = tp[currentLang];
-                    return `<div class="bg-surface-container-lowest rounded-xl p-4 flex gap-3 border-l-[3px] ${borderColor}">
-                        <span class="material-symbols-outlined text-lg text-${catColors[catKey]} flex-shrink-0 mt-0.5">${tp.icon}</span>
+                    return `<div class="bg-surface-container-lowest rounded-xl p-4 flex gap-3">
+                        <div class="flex flex-col items-center gap-1.5 flex-shrink-0">
+                            <span class="w-2 h-2 rounded-full bg-${catColors[catKey]} flex-shrink-0"></span>
+                            <span class="material-symbols-outlined text-lg text-${catColors[catKey]} mt-0.5">${tp.icon}</span>
+                        </div>
                         <div>
                             <p class="text-sm font-bold text-on-surface mb-0.5">${d.title}</p>
                             <p class="text-xs text-on-surface-variant leading-relaxed">${d.text}</p>
@@ -902,7 +903,7 @@ function renderTips() {
         </div>`;
     }
 
-    html += `<div class="flex justify-center items-center gap-1 mt-8 pt-4 border-t border-outline-variant/15">
+    html += `<div class="flex justify-center items-center gap-1 mt-8 pt-4">
         <span class="material-symbols-outlined text-xs text-outline-variant">translate</span>
         <button onclick="setLang('cs')" id="lang-cs" class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded ${currentLang === 'cs' ? 'text-primary' : 'text-outline-variant'}">Čeština</button>
         <span class="text-[10px] text-outline-variant">·</span>
@@ -950,7 +951,7 @@ function renderPrep() {
 
     if (!ud.packing) { ud.packing = {}; saveUserData(ud); }
 
-    let html = `<h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-5 flex items-center gap-3">
+    let html = `<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mb-5 flex items-center gap-3">
         ${t('prep.packing')}<span class="h-px flex-1 bg-outline-variant/20"></span>
         <span class="text-xs font-medium text-on-surface-variant">${Object.values(ud.packing).filter(Boolean).length}/${packingItems.length}</span>
     </h2>
@@ -964,7 +965,7 @@ function renderPrep() {
         `).join('')}
     </div>
 
-    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-5 flex items-center gap-3">
+    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mb-5 flex items-center gap-3">
         ${t('prep.shopping')}<span class="h-px flex-1 bg-outline-variant/20"></span>
     </h2>
     ${shoppingItems.map(cat => `
@@ -1015,6 +1016,8 @@ function switchSection(name) {
     document.querySelectorAll('.nav-item').forEach(n => { n.classList.remove('active'); n.classList.add('text-stone-500'); });
     const active = document.querySelector(`.nav-item[data-section="${name}"]`);
     active.classList.add('active'); active.classList.remove('text-stone-500');
+    // Show filter bar only on Map tab
+    document.getElementById('filter-section').style.display = name === 'map' ? '' : 'none';
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (name === 'map') setTimeout(() => map.invalidateSize(), 100);
 }
