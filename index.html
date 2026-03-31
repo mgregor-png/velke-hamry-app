@@ -141,16 +141,16 @@ tailwind.config = {
 <!-- Bottom Nav -->
 <nav class="fixed bottom-0 w-full z-50 bg-[#fcf9f1]/90 backdrop-blur-2xl shadow-[0px_-12px_32px_rgba(28,28,23,0.06)] rounded-t-2xl border-t border-[#c3c8c0]/15">
     <div class="flex justify-around items-center px-4 pb-5 pt-3">
-        <a onclick="switchSection('map')" class="nav-item active flex items-center justify-center w-12 h-12 rounded-xl cursor-pointer active:scale-90 transition-all" data-section="map">
+        <a onclick="switchSection('map')" aria-label="Map" class="nav-item active flex items-center justify-center w-12 h-12 rounded-xl cursor-pointer active:scale-90 transition-all" data-section="map">
             <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">map</span>
         </a>
-        <a onclick="switchSection('planner')" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="planner">
+        <a onclick="switchSection('planner')" aria-label="Planner" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="planner">
             <span class="material-symbols-outlined text-2xl">calendar_today</span>
         </a>
-        <a onclick="switchSection('prep')" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="prep">
+        <a onclick="switchSection('prep')" aria-label="Prep" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="prep">
             <span class="material-symbols-outlined text-2xl">checklist</span>
         </a>
-        <a onclick="switchSection('tips')" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="tips">
+        <a onclick="switchSection('tips')" aria-label="Tips" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="tips">
             <span class="material-symbols-outlined text-2xl">lightbulb</span>
         </a>
     </div>
@@ -575,12 +575,12 @@ function renderCard(c) {
                 ${photos.map((_,i) => `<span class="carousel-dot w-1.5 h-1.5 rounded-full ${i===0 ? 'bg-surface' : 'bg-surface/50'}" data-carousel="${c.id}" data-idx="${i}"></span>`).join('')}
             </div>` : ''}
             <div class="absolute top-3 left-3 flex gap-1.5">
-                ${d.badges.map((b,i) => `<span class="${i===0 && c.id===1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-lowest/90 backdrop-blur text-primary'} text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm">${b}</span>`).join('')}
+                ${d.badges.map((b,i) => `<span class="${i===0 && c.id===1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-lowest/90 backdrop-blur text-primary'} text-[11px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm">${b}</span>`).join('')}
             </div>
         </div>`
         : `<div class="relative h-44 sm:h-56 overflow-hidden flex items-center justify-center bg-surface-container-low">
             <div class="absolute top-3 left-3 flex gap-1.5">
-                ${d.badges.map(b => `<span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">${b}</span>`).join('')}
+                ${d.badges.map(b => `<span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[11px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">${b}</span>`).join('')}
             </div>
         </div>`;
     const isTime = d.dist.includes('h') || d.dist.includes('min');
@@ -604,14 +604,24 @@ function renderCard(c) {
                 <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">${t('kids')}</p>
                 <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">${d.kids}</p>
             </div>
-            <!-- Thumbs -->
+            <!-- Thumbs + Day assign -->
             <div class="flex items-center gap-2 mb-4">
-                <button onclick="setRating(${c.id}, 1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === 1 ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
+                <button data-thumb="1" onclick="setRating(${c.id}, 1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === 1 ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
                     <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === 1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_up</span>
                 </button>
-                <button onclick="setRating(${c.id}, -1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === -1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
+                <button data-thumb="-1" onclick="setRating(${c.id}, -1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === -1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
                     <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === -1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_down</span>
                 </button>
+                <div class="ml-auto">
+                    <select onchange="assignDay(${c.id}, this.value)" class="text-xs font-bold bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border-0 appearance-none cursor-pointer" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;">
+                        <option value="" ${!getUserData().days[c.id] ? 'selected' : ''}>${t('assign.none')}</option>
+                        <option value="thu" ${getUserData().days[c.id]==='thu' ? 'selected' : ''}>${t('assign.thu')}</option>
+                        <option value="fri" ${getUserData().days[c.id]==='fri' ? 'selected' : ''}>${t('assign.fri')}</option>
+                        <option value="sat" ${getUserData().days[c.id]==='sat' ? 'selected' : ''}>${t('assign.sat')}</option>
+                        <option value="sun" ${getUserData().days[c.id]==='sun' ? 'selected' : ''}>${t('assign.sun')}</option>
+                        <option value="mon" ${getUserData().days[c.id]==='mon' ? 'selected' : ''}>${t('assign.mon')}</option>
+                    </select>
+                </div>
             </div>
             ${d.details ? `<button onclick="toggleDetails(${c.id})" id="toggle-${c.id}" class="detail-toggle w-full flex items-center justify-center gap-1.5 py-2.5 mb-3 text-xs font-bold text-primary hover:text-primary-container transition-colors active:scale-[0.98]">
                 <span class="label">${t('btn.more')}</span>
@@ -640,19 +650,6 @@ function renderCard(c) {
                         <div><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${t('detail.web')}</p>
                         <a href="https://${d.details.web}" target="_blank" class="text-xs text-primary underline underline-offset-2 hover:text-primary-container">${d.details.web}</a></div>
                     </div>` : ''}
-                    <!-- Day assignment inside details -->
-                    <div class="flex items-center gap-2.5 mt-3 pt-2">
-                        <span class="material-symbols-outlined text-sm text-primary mt-0.5">event</span>
-                        <div class="flex-1"><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">${t('assign')}</p>
-                        <select onchange="assignDay(${c.id}, this.value)" class="text-xs font-bold bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border-0 appearance-none cursor-pointer w-full" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;">
-                            <option value="" ${!getUserData().days[c.id] ? 'selected' : ''}>${t('assign.none')}</option>
-                            <option value="thu" ${getUserData().days[c.id]==='thu' ? 'selected' : ''}>${t('assign.thu')}</option>
-                            <option value="fri" ${getUserData().days[c.id]==='fri' ? 'selected' : ''}>${t('assign.fri')}</option>
-                            <option value="sat" ${getUserData().days[c.id]==='sat' ? 'selected' : ''}>${t('assign.sat')}</option>
-                            <option value="sun" ${getUserData().days[c.id]==='sun' ? 'selected' : ''}>${t('assign.sun')}</option>
-                            <option value="mon" ${getUserData().days[c.id]==='mon' ? 'selected' : ''}>${t('assign.mon')}</option>
-                        </select></div>
-                    </div>
                 </div>
             </div>` : ''}
             <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="${c.link}" target="_blank">
@@ -723,9 +720,7 @@ function ensureUserData() {
 }
 function saveUserData(data) {
     _sharedData = data;
-    // Save to Firebase (non-blocking)
-    dataRef.set(data);
-    // Also keep localStorage as offline fallback
+    // Local only — each caller does its own granular Firebase write
     localStorage.setItem('vh-planner', JSON.stringify(data));
 }
 
@@ -756,7 +751,21 @@ function setRating(cardId, value) {
     // Toggle: tap same value again to clear
     d.ratings[cardId] = d.ratings[cardId] === value ? 0 : value;
     saveUserData(d);
-    renderCards(); // re-render to re-sort
+    dataRef.child('ratings/' + cardId).set(d.ratings[cardId]);
+    // Targeted update: just update the thumb buttons for this card
+    const card = document.getElementById('card-' + cardId);
+    if (card) {
+        card.querySelectorAll('[data-thumb]').forEach(btn => {
+            const thumbVal = parseInt(btn.dataset.thumb);
+            const isActive = d.ratings[cardId] === thumbVal;
+            btn.className = btn.className.replace(/bg-primary text-on-primary|bg-tertiary text-on-tertiary|bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest/g, '');
+            if (isActive && thumbVal === 1) btn.classList.add('bg-primary', 'text-on-primary');
+            else if (isActive && thumbVal === -1) btn.classList.add('bg-tertiary', 'text-on-tertiary');
+            else btn.classList.add('bg-surface-container-high', 'text-on-surface-variant', 'hover:bg-surface-container-highest');
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if (icon) icon.style.fontVariationSettings = isActive ? "'FILL' 1" : "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24";
+        });
+    }
     renderPlanner();
 }
 
@@ -764,6 +773,8 @@ function assignDay(cardId, day) {
     const d = ensureUserData();
     if (day) d.days[cardId] = day; else delete d.days[cardId];
     saveUserData(d);
+    if (day) dataRef.child('days/' + cardId).set(day);
+    else dataRef.child('days/' + cardId).remove();
     renderPlanner();
 }
 
@@ -831,6 +842,7 @@ function setMeal(day, mealType, idx) {
     if (!ud.meals[day]) ud.meals[day] = {};
     ud.meals[day][mealType] = idx === '' ? null : parseInt(idx);
     saveUserData(ud);
+    dataRef.child('meals/' + day + '/' + mealType).set(ud.meals[day][mealType]);
     renderPlanner();
 }
 
@@ -875,7 +887,7 @@ function renderPlanner() {
             <div class="absolute top-0 right-0 p-3 opacity-10">
                 <span class="text-3xl font-black">${dayCodes[day]}</span>
             </div>
-            <p class="text-[9px] font-extrabold uppercase tracking-widest text-tertiary mb-3">${t('day.' + day)}</p>
+            <p class="text-[11px] font-extrabold uppercase tracking-widest text-tertiary mb-3">${t('day.' + day)}</p>
             ${cards.length === 0
                 ? `<p class="text-xs text-on-surface-variant opacity-50 italic">—</p>`
                 : cards.map(c => {
@@ -1078,6 +1090,7 @@ function togglePacking(idx) {
     if (!ud.packing) ud.packing = {};
     ud.packing[idx] = !ud.packing[idx];
     saveUserData(ud);
+    dataRef.child('packing/' + idx).set(ud.packing[idx]);
     renderPrep();
 }
 
