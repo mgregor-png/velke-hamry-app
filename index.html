@@ -194,6 +194,10 @@ const T = {
         'btn.mapy': 'Otevřít v Mapy.cz', 'btn.search': 'Hledat v Mapy.cz',
         'kids': 'Pro děti',
         'btn.more': 'Více info', 'btn.less': 'Méně info',
+        'rate': 'Hodnocení', 'assign': 'Přidat do dne',
+        'assign.none': '—', 'assign.thu': 'Čtvrtek', 'assign.fri': 'Pátek', 'assign.sat': 'Sobota', 'assign.sun': 'Neděle', 'assign.mon': 'Pondělí',
+        'planner.timeline': 'Plán výletů', 'planner.unassigned': 'Nepřiřazené', 'planner.empty': 'Žádné výlety — přiřaď je na kartách v záložce Mapa.',
+        'planner.dragHint': 'Přiřazuj výlety přímo na kartách pomocí výběru dne.',
         'detail.hours': 'Otevírací doba', 'detail.parking': 'Parkování', 'detail.fee': 'Vstupné',
         'detail.time': 'Délka návštěvy', 'detail.food': 'Jídlo', 'detail.warnings': 'Pozor',
         'detail.bestTime': 'Nejlepší čas', 'detail.web': 'Web',
@@ -203,9 +207,7 @@ const T = {
         'tip2.title': 'Svačina je must', 'tip2.text': 'Sbal jídlo a vodu. Na trasách nic není — žádný stánek, žádná restaurace.',
         'tip3.title': 'Krosna > Kočár', 'tip3.text': 'Nosítko vyhrává na 80 % tras. Jen Souš je opravdu kočárková.',
         'tip4.title': 'Otočit včas', 'tip4.text': 'Včasný návrat = výhra. Netlačit na dokončení — hlavně s malými dětmi.',
-        'day.fri': 'Pátek', 'day.fri.label': 'Příjezd', 'day.fri.name': 'Protržená přehrada', 'day.fri.desc': '"Must-do" výšlap. Přijeď, usaď se a vyraz na trasu, dokud máš energii.',
-        'day.sat': 'Sobota', 'day.sat.label': 'Město', 'day.sat.name': 'Ještěd / Liberec', 'day.sat.desc': 'Lanovka nahoru na výhledy, pak dolů do Liberce na oběd. Záloha pro špatné počasí.',
-        'day.sun': 'Neděle', 'day.sun.label': 'Výběr', 'day.sun.name': 'Jizerka NEBO Štěpánka', 'day.sun.desc': 'Poklidná procházka na Jizerce, nebo výstup na Štěpánku pro aktivní posádku.',
+        'day.thu': 'Čtvrtek', 'day.fri': 'Pátek', 'day.sat': 'Sobota', 'day.sun': 'Neděle', 'day.mon': 'Pondělí',
     },
     en: {
         'header.subtitle': 'Weekend trip planner · Jizerské hory · Family of 4',
@@ -217,6 +219,10 @@ const T = {
         'btn.mapy': 'Open in Mapy.cz', 'btn.search': 'Search in Mapy.cz',
         'kids': 'Kids Guide',
         'btn.more': 'More info', 'btn.less': 'Less info',
+        'rate': 'Rating', 'assign': 'Add to day',
+        'assign.none': '—', 'assign.thu': 'Thursday', 'assign.fri': 'Friday', 'assign.sat': 'Saturday', 'assign.sun': 'Sunday', 'assign.mon': 'Monday',
+        'planner.timeline': 'Trip Plan', 'planner.unassigned': 'Unassigned', 'planner.empty': 'No trips assigned — use the day picker on each card in the Map tab.',
+        'planner.dragHint': 'Assign trips using the day picker on each card.',
         'detail.hours': 'Hours', 'detail.parking': 'Parking', 'detail.fee': 'Entry fee',
         'detail.time': 'Time needed', 'detail.food': 'Food', 'detail.warnings': 'Heads up',
         'detail.bestTime': 'Best time', 'detail.web': 'Website',
@@ -226,9 +232,7 @@ const T = {
         'tip2.title': 'Pack food', 'tip2.text': 'Bring food & water. Nothing on the trails — no kiosks, no restaurants.',
         'tip3.title': 'Carrier > Stroller', 'tip3.text': 'Child carrier beats stroller on 80% of trails. Only Souš is truly stroller-safe.',
         'tip4.title': 'Turn back early', 'tip4.text': 'Turning back early = win. Don\'t push to finish — especially with little ones.',
-        'day.fri': 'Friday', 'day.fri.label': 'Arrival', 'day.fri.name': 'Protržená přehrada', 'day.fri.desc': 'The "must-do" hike. Arrive, settle in, then hit the trail while you still have energy.',
-        'day.sat': 'Saturday', 'day.sat.label': 'City Adventure', 'day.sat.name': 'Ještěd / Liberec', 'day.sat.desc': 'Cable car up for views, then downhill into Liberec for lunch. Indoor backup if weather turns.',
-        'day.sun': 'Sunday', 'day.sun.label': 'Pick Your Finish', 'day.sun.name': 'Jizerka OR Štěpánka', 'day.sun.desc': 'Easy stroll at Jizerka if tired, or a final climb to Štěpánka lookout.',
+        'day.thu': 'Thursday', 'day.fri': 'Friday', 'day.sat': 'Saturday', 'day.sun': 'Sunday', 'day.mon': 'Monday',
     }
 };
 
@@ -425,6 +429,25 @@ function renderCard(c) {
                     </div>` : ''}
                 </div>
             </div>` : ''}
+            <!-- Thumbs + Day assign -->
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <div class="flex items-center gap-2">
+                    <button onclick="setRating(${c.id}, 1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === 1 ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
+                        <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === 1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_up</span>
+                    </button>
+                    <button onclick="setRating(${c.id}, -1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === -1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
+                        <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === -1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_down</span>
+                    </button>
+                </div>
+                <select onchange="assignDay(${c.id}, this.value)" class="text-xs font-bold bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border-0 appearance-none cursor-pointer" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;">
+                    <option value="" ${!getUserData().days[c.id] ? 'selected' : ''}>${t('assign.none')}</option>
+                    <option value="thu" ${getUserData().days[c.id]==='thu' ? 'selected' : ''}>${t('assign.thu')}</option>
+                    <option value="fri" ${getUserData().days[c.id]==='fri' ? 'selected' : ''}>${t('assign.fri')}</option>
+                    <option value="sat" ${getUserData().days[c.id]==='sat' ? 'selected' : ''}>${t('assign.sat')}</option>
+                    <option value="sun" ${getUserData().days[c.id]==='sun' ? 'selected' : ''}>${t('assign.sun')}</option>
+                    <option value="mon" ${getUserData().days[c.id]==='mon' ? 'selected' : ''}>${t('assign.mon')}</option>
+                </select>
+            </div>
             <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="${c.link}" target="_blank">
                 <span class="material-symbols-outlined text-sm">map</span> ${c.isSearch ? t('btn.search') : t('btn.mapy')}
             </a>
@@ -441,6 +464,32 @@ function renderDetailRow(icon, label, value) {
     </div>`;
 }
 
+// ═══════════════════════════════════════════════════
+// USER DATA (localStorage)
+// ═══════════════════════════════════════════════════
+function getUserData() {
+    try { return JSON.parse(localStorage.getItem('vh-planner') || '{}'); } catch { return {}; }
+}
+function saveUserData(data) { localStorage.setItem('vh-planner', JSON.stringify(data)); }
+function ensureUserData() { const d = getUserData(); if (!d.ratings) d.ratings = {}; if (!d.days) d.days = {}; saveUserData(d); return d; }
+ensureUserData();
+
+function setRating(cardId, value) {
+    const d = ensureUserData();
+    // Toggle: tap same value again to clear
+    d.ratings[cardId] = d.ratings[cardId] === value ? 0 : value;
+    saveUserData(d);
+    renderCards(); // re-render to re-sort
+    renderPlanner();
+}
+
+function assignDay(cardId, day) {
+    const d = ensureUserData();
+    if (day) d.days[cardId] = day; else delete d.days[cardId];
+    saveUserData(d);
+    renderPlanner();
+}
+
 function toggleDetails(id) {
     const section = document.getElementById('details-' + id);
     const btn = document.getElementById('toggle-' + id);
@@ -450,8 +499,11 @@ function toggleDetails(id) {
 }
 
 function renderCards() {
+    const ud = ensureUserData();
+    const sortByRating = (a, b) => (ud.ratings[b.id] || 0) - (ud.ratings[a.id] || 0);
     const cats = { recommended: [], indoor: [], daytrips: [] };
     CARDS.forEach(c => cats[c.category].push(c));
+    Object.values(cats).forEach(arr => arr.sort(sortByRating));
     let html = '';
     for (const [cat, cards] of Object.entries(cats)) {
         html += `<h2 class="text-xl sm:text-2xl font-extrabold text-primary ${cat !== 'recommended' ? 'mt-8' : ''} mb-4 sm:mb-6 flex items-center gap-3">
@@ -462,24 +514,55 @@ function renderCards() {
 }
 
 function renderPlanner() {
-    const days = [
-        { key: 'fri', code: 'FRI', dots: 1 },
-        { key: 'sat', code: 'SAT', dots: 2 },
-        { key: 'sun', code: 'SUN', dots: 3 }
-    ];
-    document.getElementById('planner-days').innerHTML = days.map(d => `
-        <div class="bg-surface-container-low p-5 sm:p-6 rounded-2xl relative overflow-hidden group ${d.key === 'sun' ? 'border-2 border-primary/10' : ''}">
-            <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                <span class="text-3xl font-black">${d.code}</span>
-            </div>
-            <p class="text-[9px] font-extrabold uppercase tracking-widest text-tertiary mb-1">${t('day.' + d.key)} — ${t('day.' + d.key + '.label')}</p>
-            <h4 class="text-lg font-extrabold text-on-surface mb-3">${t('day.' + d.key + '.name')}</h4>
-            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">${t('day.' + d.key + '.desc')}</p>
-            <div class="mt-4 flex gap-1">
-                ${[1,2,3].map(i => `<span class="w-1.5 h-1.5 rounded-full ${i <= d.dots ? 'bg-primary' : 'bg-outline-variant/30'}"></span>`).join('')}
-            </div>
-        </div>
-    `).join('');
+    const dayKeys = ['thu', 'fri', 'sat', 'sun', 'mon'];
+    const dayCodes = { thu: 'THU', fri: 'FRI', sat: 'SAT', sun: 'SUN', mon: 'MON' };
+    const ud = ensureUserData();
+    const cardsByDay = {};
+    dayKeys.forEach(k => cardsByDay[k] = []);
+
+    Object.entries(ud.days || {}).forEach(([cardId, day]) => {
+        const card = CARDS.find(c => c.id === parseInt(cardId));
+        if (card && cardsByDay[day]) cardsByDay[day].push(card);
+    });
+
+    const hasAny = Object.values(cardsByDay).some(arr => arr.length > 0);
+
+    let html = '';
+    if (!hasAny) {
+        html = `<div class="text-center py-8">
+            <span class="material-symbols-outlined text-4xl text-outline-variant/30 mb-3">event_note</span>
+            <p class="text-sm text-on-surface-variant">${t('planner.empty')}</p>
+        </div>`;
+    } else {
+        html = dayKeys.map(day => {
+            const cards = cardsByDay[day];
+            return `<div class="bg-surface-container-low p-5 sm:p-6 rounded-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-10">
+                    <span class="text-3xl font-black">${dayCodes[day]}</span>
+                </div>
+                <p class="text-[9px] font-extrabold uppercase tracking-widest text-tertiary mb-3">${t('day.' + day)}</p>
+                ${cards.length === 0
+                    ? `<p class="text-xs text-on-surface-variant opacity-50 italic">—</p>`
+                    : cards.map(c => {
+                        const d = c[currentLang];
+                        const rating = ud.ratings[c.id] || 0;
+                        return `<div class="flex items-center gap-3 mb-2 last:mb-0">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold text-on-primary flex-shrink-0" style="background:${c.color};">${c.id}</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-bold text-on-surface truncate">${d.name}</p>
+                                <p class="text-[10px] text-on-surface-variant">${d.dist} · ${d.loc}</p>
+                            </div>
+                            ${rating === 1 ? `<span class="material-symbols-outlined text-sm text-primary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_up</span>` : rating === -1 ? `<span class="material-symbols-outlined text-sm text-tertiary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_down</span>` : ''}
+                        </div>`;
+                    }).join('')}
+            </div>`;
+        }).join('');
+    }
+
+    document.getElementById('planner-days').innerHTML = html;
+    document.getElementById('planner-days').className = hasAny
+        ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5'
+        : '';
 }
 
 function renderTips() {
