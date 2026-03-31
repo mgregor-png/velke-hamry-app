@@ -141,21 +141,17 @@ tailwind.config = {
 <!-- Bottom Nav -->
 <nav class="fixed bottom-0 w-full z-50 bg-[#fcf9f1]/90 backdrop-blur-2xl shadow-[0px_-12px_32px_rgba(28,28,23,0.06)] rounded-t-2xl border-t border-[#c3c8c0]/15">
     <div class="flex justify-around items-center px-4 pb-5 pt-3">
-        <a onclick="switchSection('map')" class="nav-item active flex flex-col items-center justify-center px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="map">
-            <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">map</span>
-            <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.map"></span>
+        <a onclick="switchSection('map')" class="nav-item active flex items-center justify-center w-12 h-12 rounded-xl cursor-pointer active:scale-90 transition-all" data-section="map">
+            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">map</span>
         </a>
-        <a onclick="switchSection('planner')" class="nav-item flex flex-col items-center justify-center text-stone-500 px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="planner">
-            <span class="material-symbols-outlined text-xl">calendar_today</span>
-            <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.planner"></span>
+        <a onclick="switchSection('planner')" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="planner">
+            <span class="material-symbols-outlined text-2xl">calendar_today</span>
         </a>
-        <a onclick="switchSection('prep')" class="nav-item flex flex-col items-center justify-center text-stone-500 px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="prep">
-            <span class="material-symbols-outlined text-xl">checklist</span>
-            <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.prep"></span>
+        <a onclick="switchSection('prep')" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="prep">
+            <span class="material-symbols-outlined text-2xl">checklist</span>
         </a>
-        <a onclick="switchSection('tips')" class="nav-item flex flex-col items-center justify-center text-stone-500 px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="tips">
-            <span class="material-symbols-outlined text-xl">lightbulb</span>
-            <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.tips"></span>
+        <a onclick="switchSection('tips')" class="nav-item flex items-center justify-center w-12 h-12 rounded-xl text-stone-500 cursor-pointer active:scale-90 transition-all" data-section="tips">
+            <span class="material-symbols-outlined text-2xl">lightbulb</span>
         </a>
     </div>
 </nav>
