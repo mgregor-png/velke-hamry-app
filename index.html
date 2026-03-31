@@ -68,6 +68,10 @@ tailwind.config = {
     .trail-card { transition: opacity 0.3s ease, transform 0.3s ease; }
     .trail-card.dimmed { opacity: 0.25; transform: scale(0.98); }
     .trail-card.highlighted { box-shadow: 0 0 0 3px #384b38; }
+    .detail-section { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; opacity: 0; }
+    .detail-section.open { max-height: 600px; opacity: 1; }
+    .detail-toggle .chevron { transition: transform 0.3s ease; }
+    .detail-toggle.open .chevron { transform: rotate(180deg); }
     #leaflet-map { z-index: 1; }
     .leaflet-control-zoom { display: none; }
     .nav-item.active { background: #e5e2da; color: #384b38; border-radius: 0.75rem; }
@@ -189,6 +193,10 @@ const T = {
         'filter.sunny': 'Slunečno', 'filter.cold': 'Zima', 'filter.rainy': 'Déšť', 'filter.windy': 'Vítr', 'filter.mild': 'Oblačno', 'filter.stroller': 'Kočárek',
         'btn.mapy': 'Otevřít v Mapy.cz', 'btn.search': 'Hledat v Mapy.cz',
         'kids': 'Pro děti',
+        'btn.more': 'Více info', 'btn.less': 'Méně info',
+        'detail.hours': 'Otevírací doba', 'detail.parking': 'Parkování', 'detail.fee': 'Vstupné',
+        'detail.time': 'Délka návštěvy', 'detail.food': 'Jídlo', 'detail.warnings': 'Pozor',
+        'detail.bestTime': 'Nejlepší čas', 'detail.web': 'Web',
         'tips.title': 'Tipy od profíků',
         'tips.subtitle': 'Nepodceň — tyhle věci rozhodnou o výletě.',
         'tip1.title': 'Offline mapy', 'tip1.text': 'Stáhni si offline mapy v Mapy.cz. Signál v horách kolísá.',
@@ -208,6 +216,10 @@ const T = {
         'filter.sunny': 'Sunny', 'filter.cold': 'Cold', 'filter.rainy': 'Rainy', 'filter.windy': 'Windy', 'filter.mild': 'Mild', 'filter.stroller': 'Stroller',
         'btn.mapy': 'Open in Mapy.cz', 'btn.search': 'Search in Mapy.cz',
         'kids': 'Kids Guide',
+        'btn.more': 'More info', 'btn.less': 'Less info',
+        'detail.hours': 'Hours', 'detail.parking': 'Parking', 'detail.fee': 'Entry fee',
+        'detail.time': 'Time needed', 'detail.food': 'Food', 'detail.warnings': 'Heads up',
+        'detail.bestTime': 'Best time', 'detail.web': 'Website',
         'tips.title': 'Expert Family Tips',
         'tips.subtitle': 'Don\'t underestimate — these make or break the trip.',
         'tip1.title': 'Offline maps', 'tip1.text': 'Download Mapy.cz offline. Signal is unreliable in the mountains.',
@@ -226,87 +238,111 @@ const CARDS = [
         lat: 50.7833, lng: 15.3167, color: '#783016', icon: null,
         img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBsyiTgLYSUGMp5mpoTctsf0HB6nr4MY3lfC9OMBPyTWMLePsIrcf7uAHtr5m_nb0nqBWed4cFZLAZHX8OksFlqdDcZBovmACVzCk-FuYAGRD8rt8QPnPESpP_r8Lc1X1bmDZ6CFYvIbSHf4VO30ldzwWrKkWMrBPpu4lo02o4y37qQSjXvGROZe9AhmeF-h_7EE_QhxxEr05kDqaOn42IFMnsiIwBtT7A4pPnNVGt8sML4TrXABwMB7YyW0nsFmrw4-ZBXAr-c9N3v',
         link: 'https://mapy.cz/s/pusenudode',
-        cs: { name: 'Protržená přehrada', badges: ['Best Pick', 'Středně těžká'], loc: 'Desná', dist: '4–6 km', strollerLabel: 'Kočárek ❌', weatherTags: ['☀️ Nejlepší za slunce', '🌧️ Bahno za deště'], desc: 'Lesní cesta podél Bílé Desné k ruinám přehrady. Naučné panely, dřevěné lávky, voda. Krátké úseky ideální k zastavení.', kids: '5letý ujde většinu. 2letý do krosny na strmějších úsecích. Nejlepší poměr dobrodružství a námahy.' },
-        en: { name: 'Protržená přehrada', badges: ['Best Pick', 'Moderate'], loc: 'Desná', dist: '4–6 km', strollerLabel: 'Stroller ❌', weatherTags: ['☀️ Best in sun', '🌧️ Muddy when wet'], desc: 'Forest trail along Bílá Desná to the historical dam ruins. Educational panels, wooden bridges, water features.', kids: '5yo walks most of it. 2yo in carrier for steep parts. Best adventure-to-effort ratio.' }
+        cs: { name: 'Protržená přehrada', badges: ['Best Pick', 'Středně těžká'], loc: 'Desná', dist: '4–6 km', strollerLabel: 'Kočárek ❌', weatherTags: ['☀️ Nejlepší za slunce', '🌧️ Bahno za deště'], desc: 'Lesní cesta podél Bílé Desné k ruinám přehrady. Naučné panely, dřevěné lávky, voda. Krátké úseky ideální k zastavení.', kids: '5letý ujde většinu. 2letý do krosny na strmějších úsecích. Nejlepší poměr dobrodružství a námahy.',
+            details: { hours: '24/7, celoročně (venkovní)', parking: 'Albrechtice v Jizerských horách, zdarma, 3,5 km pěšky k přehradě', fee: 'Zdarma', time: '3–4 hodiny (půldenní výlet)', food: 'Sezónní stánek na místě (nespolehlivý). Vezměte vlastní.', warnings: '3,5 km do kopce tam i zpět. Žádné toalety. Bahno po dešti. Policie kontroluje parkování.', bestTime: 'Ráno (9–10h). Červenec na borůvky.', web: 'protrzenaprehrada.cz' } },
+        en: { name: 'Protržená přehrada', badges: ['Best Pick', 'Moderate'], loc: 'Desná', dist: '4–6 km', strollerLabel: 'Stroller ❌', weatherTags: ['☀️ Best in sun', '🌧️ Muddy when wet'], desc: 'Forest trail along Bílá Desná to the historical dam ruins. Educational panels, wooden bridges, water features.', kids: '5yo walks most of it. 2yo in carrier for steep parts. Best adventure-to-effort ratio.',
+            details: { hours: '24/7, year-round (outdoor)', parking: 'Albrechtice v Jizerských horách, free, 3.5 km walk to dam', fee: 'Free', time: '3–4 hours (half-day trip)', food: 'Seasonal kiosk at site (unreliable). Bring your own.', warnings: '3.5 km uphill each way. No toilets. Muddy after rain. Police patrol for illegal parking.', bestTime: 'Morning start (9–10am). July for blueberries.', web: 'protrzenaprehrada.cz' } }
     },
     {
         id: 2, category: 'recommended', good: 'sunny', bad: 'windy,cold', stroller: 'partial',
         lat: 50.8333, lng: 15.3500, color: '#384b38', icon: null,
         img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBbj4g5cy7jJVwMdfaY1-ZOB-fZRLHIbw1Z4tyjCGKcjfWDK4_-2ReY3iC-0t94N7_gwkaT4BioLQ_1vD8bbjEe-daBObjz8PoYEEBvbcSSNt4uWDkkbhIPBdYAvk1c3jB1Vift_JaPEU3B_j5u86PWzjOCG4I5KwlivGTrAFNb113WDdxBk_CedmteHvuktwvTtA8Gs-wTBBwRD8TQxO8hBcPyLs9wJMCsyNcmEcS6gIZ0qn_0vO_5KIyCKuH8b3k7BgYdBIC1P6PH',
         link: 'https://mapy.cz/s/caronamego',
-        cs: { name: 'Jizerka (rašeliniště)', badges: ['Lehká'], loc: 'Jizerka', dist: '3–5 km', strollerLabel: 'Kočárek ⚠️', weatherTags: ['☀️ Klidný den', '💨 Větrné, bez přístřeší'], desc: 'Otevřená rašeliništní krajina s dřevěnými chodníky. Safírový potok — kameny a voda pro děti.', kids: 'Nulový stres. Žádné převýšení. Vítr fouká víc, než se zdá z parkoviště — vezměte vrstvy.' },
-        en: { name: 'Jizerka (rašeliniště)', badges: ['Easy'], loc: 'Jizerka village', dist: '3–5 km', strollerLabel: 'Stroller ⚠️', weatherTags: ['☀️ Calm day', '💨 Exposed, no shelter'], desc: 'Open peat bog with wooden boardwalks. Safírový potok — rocks and water for kids.', kids: 'Zero-stress terrain. No elevation. Very windy — always bring extra layers.' }
+        cs: { name: 'Jizerka (rašeliniště)', badges: ['Lehká'], loc: 'Jizerka', dist: '3–5 km', strollerLabel: 'Kočárek ⚠️', weatherTags: ['☀️ Klidný den', '💨 Větrné, bez přístřeší'], desc: 'Otevřená rašeliništní krajina s dřevěnými chodníky. Safírový potok — kameny a voda pro děti.', kids: 'Nulový stres. Žádné převýšení. Vítr fouká víc, než se zdá z parkoviště — vezměte vrstvy.',
+            details: { hours: '24/7, celoročně. Nejlepší květen–říjen.', parking: 'Jizerka-Morina, 100 Kč/den, ~90 míst, 7:00–24:00. Bez karavanů. Do vesnice se nejezdí.', fee: 'Zdarma', time: '2–3 hodiny (okruh 6 km)', food: 'Restaurace v obci Jizerka', warnings: 'Zpáteční stezka úzká (s kočárem radši po silnici). Víkendy plné parkoviště do 10h. Komáři v létě.', bestTime: 'Všední den ráno před 10h. Červen–září.', web: 'kudyznudy.cz' } },
+        en: { name: 'Jizerka (rašeliniště)', badges: ['Easy'], loc: 'Jizerka village', dist: '3–5 km', strollerLabel: 'Stroller ⚠️', weatherTags: ['☀️ Calm day', '💨 Exposed, no shelter'], desc: 'Open peat bog with wooden boardwalks. Safírový potok — rocks and water for kids.', kids: 'Zero-stress terrain. No elevation. Very windy — always bring extra layers.',
+            details: { hours: '24/7, year-round. Best May–October.', parking: 'Jizerka-Morina, 100 CZK/day, ~90 spots, 7:00–24:00. No caravans. Can\'t drive into village.', fee: 'Free', time: '2–3 hours (6 km loop)', food: 'Restaurants in Jizerka village', warnings: 'Return trail narrow (use road back with stroller). Parking fills by 10am weekends. Mosquitoes in summer.', bestTime: 'Weekday morning before 10am. June–September.', web: 'kudyznudy.cz' } }
     },
     {
         id: 3, category: 'recommended', good: 'sunny', bad: 'rainy,windy', stroller: 'no',
         lat: 50.7667, lng: 15.4000, color: '#96472b', icon: 'castle',
         link: 'https://mapy.cz/s/falehovoje',
-        cs: { name: 'Rozhledna Štěpánka', badges: ['Středně těžká'], loc: 'Kořenov', dist: '4–6 km', strollerLabel: 'Kočárek ❌', weatherTags: ['☀️ Jasno pro výhledy', '💨 Větrná věž'], desc: 'Lesní cesty s krátkým stoupáním ke kamenné rozhledně. Panoramatické výhledy na Jizerky i Krkonoše.', kids: 'Motivace: "Jdeme na věž!" 2letý do krosny nahoru. Věž je odměna.' },
-        en: { name: 'Rozhledna Štěpánka', badges: ['Moderate'], loc: 'Kořenov', dist: '4–6 km', strollerLabel: 'Stroller ❌', weatherTags: ['☀️ Clear sky for views', '💨 Exposed tower top'], desc: 'Forest paths with a short steep climb to a stone lookout tower. Panoramic views.', kids: 'Built-in motivation — "we\'re climbing the tower!" Carry the 2yo uphill.' }
+        cs: { name: 'Rozhledna Štěpánka', badges: ['Středně těžká'], loc: 'Kořenov', dist: '4–6 km', strollerLabel: 'Kočárek ❌', weatherTags: ['☀️ Jasno pro výhledy', '💨 Větrná věž'], desc: 'Lesní cesty s krátkým stoupáním ke kamenné rozhledně. Panoramatické výhledy na Jizerky i Krkonoše.', kids: 'Motivace: "Jdeme na věž!" 2letý do krosny nahoru. Věž je odměna.',
+            details: { hours: 'Dub–čer Út–Ne 10–17, Čvc–srp denně 10–18, Zář–říj Út–Ne 10–17, Lis–pro So–Ne 10–16', parking: 'Příchovice (U Kravina) 50 Kč/den, 1,5 km pěšky. Chata Hvězda blíže.', fee: 'Dospělí 50 Kč, děti 20 Kč', time: '1,5–2 hodiny', food: 'Sezónní stánek, Příchovická hospůdka, Chata Hvězda', warnings: '120 úzkých kamenných schodů, žádný výtah. Zavřeno za špatného počasí. Tel: +420 603 806 473', bestTime: 'Ráno pro nejčistší výhledy. Všední dny.', web: 'korenov.cz' } },
+        en: { name: 'Rozhledna Štěpánka', badges: ['Moderate'], loc: 'Kořenov', dist: '4–6 km', strollerLabel: 'Stroller ❌', weatherTags: ['☀️ Clear sky for views', '💨 Exposed tower top'], desc: 'Forest paths with a short steep climb to a stone lookout tower. Panoramic views.', kids: 'Built-in motivation — "we\'re climbing the tower!" Carry the 2yo uphill.',
+            details: { hours: 'Apr–Jun Tue–Sun 10–17, Jul–Aug daily 10–18, Sep–Oct Tue–Sun 10–17, Nov–Dec Sat–Sun 10–16', parking: 'Příchovice (U Kravina) 50 CZK/day, 1.5 km walk. Chata Hvězda closer.', fee: 'Adults 50 CZK, children 20 CZK', time: '1.5–2 hours', food: 'Seasonal kiosk, Příchovická hospůdka, Chata Hvězda', warnings: '120 narrow stone steps, no elevator. Closed in bad weather. Call: +420 603 806 473', bestTime: 'Morning for clearest views. Weekdays.', web: 'korenov.cz' } }
     },
     {
         id: 4, category: 'recommended', good: 'sunny,rainy,cold', bad: 'windy', stroller: 'yes',
         lat: 50.7900, lng: 15.3300, color: '#384b38', icon: 'water',
         link: 'https://mapy.cz/s/bevanogare',
-        cs: { name: 'Přehrada Souš', badges: ['Velmi lehká', 'Kočárek OK'], loc: 'Desná', dist: '2–4 km', strollerLabel: 'Kočárek ✅', weatherTags: ['🌧️ OK za deště', '❄️ OK v zimě', '💨 Větrné'], desc: 'Široká asfaltka kolem přehrady. Rovná, hladká, využívaná cyklisty. Libovolná délka.', kids: 'Záloha na kočárek. Vezměte odrážedlo pro 5letého. Klidná procházka — ideální na unavené dny.' },
-        en: { name: 'Přehrada Souš', badges: ['Very Easy', 'Stroller OK'], loc: 'Desná', dist: '2–4 km', strollerLabel: 'Stroller ✅', weatherTags: ['🌧️ Works in rain', '❄️ Works in cold', '💨 Open & windy'], desc: 'Wide asphalt road around a reservoir. Flat, smooth. Flexible length.', kids: 'Stroller-safe fallback. Bring a balance bike for the 5yo. Calm walk — perfect for tired days.' }
+        cs: { name: 'Přehrada Souš', badges: ['Velmi lehká', 'Kočárek OK'], loc: 'Desná', dist: '2–4 km', strollerLabel: 'Kočárek ✅', weatherTags: ['🌧️ OK za deště', '❄️ OK v zimě', '💨 Větrné'], desc: 'Široká asfaltka kolem přehrady. Rovná, hladká, využívaná cyklisty. Libovolná délka.', kids: 'Záloha na kočárek. Vezměte odrážedlo pro 5letého. Klidná procházka — ideální na unavené dny.',
+            details: { hours: 'Celoročně (silnice autem květen–říjen). Zima = lyžařský areál.', parking: 'Nové parkoviště, 100 míst, 50 Kč/den', fee: 'Zdarma', time: '1,5–2 hodiny (3–5 km tam a zpět)', food: 'Nic u přehrady. Restaurace v Desné.', warnings: 'Nelze přejít hráz. Koupání zakázáno (pitná voda). Celý okruh 12 km je na děti moc. Silnice sdílená s auty v létě.', bestTime: 'Ráno. Květen–říjen pro přístup autem. Kombinujte s Protrženou přehradou.', web: 'sous.ceskehory.cz' } },
+        en: { name: 'Přehrada Souš', badges: ['Very Easy', 'Stroller OK'], loc: 'Desná', dist: '2–4 km', strollerLabel: 'Stroller ✅', weatherTags: ['🌧️ Works in rain', '❄️ Works in cold', '💨 Open & windy'], desc: 'Wide asphalt road around a reservoir. Flat, smooth. Flexible length.', kids: 'Stroller-safe fallback. Bring a balance bike for the 5yo. Calm walk — perfect for tired days.',
+            details: { hours: 'Year-round (road open to cars May–Oct only). Winter = ski area.', parking: 'New lot, 100 spots, 50 CZK/day', fee: 'Free', time: '1.5–2 hours (3–5 km out-and-back)', food: 'Nothing at dam. Restaurants in Desná.', warnings: 'Can\'t cross dam wall. No swimming (drinking water). Full 12km loop too long for kids. Road shared with cars in summer.', bestTime: 'Morning. May–October for car access. Combine with Protržená přehrada.', web: 'sous.ceskehory.cz' } }
     },
     {
         id: 5, category: 'indoor', good: 'rainy,cold,windy', bad: 'sunny', stroller: 'yes',
         lat: 50.7598, lng: 15.0555, color: '#4f634f', icon: 'science',
         link: 'https://mapy.cz/s/dufokazecu',
-        cs: { name: 'iQLANDIA', badges: ['Vnitřní', 'Na déšť'], loc: 'Liberec', dist: '2–3 h', strollerLabel: 'Kočárek ✅', weatherTags: ['🌧️ Déšť · ❄️ Zima · 💨 Vítr'], desc: 'Velké interaktivní vědecké centrum. Hands-on exponáty, vodní zóny, experimenty. Děti mohou na vše sahat.', kids: 'Vysoká zábava, nízká námaha. Ideální 2–3h blok za špatného počasí. Lepší pro 5letého.' },
-        en: { name: 'iQLANDIA', badges: ['Indoor', 'Rainy Day Pick'], loc: 'Liberec', dist: '2–3 h', strollerLabel: 'Stroller ✅', weatherTags: ['🌧️ Rain · ❄️ Cold · 💨 Wind'], desc: 'Large interactive science center with hands-on exhibits, water play zones, experiments.', kids: 'High engagement, low effort. Ideal 2–3h block when weather is bad. Better for 5yo.' }
+        cs: { name: 'iQLANDIA', badges: ['Vnitřní', 'Na déšť'], loc: 'Liberec', dist: '2–3 h', strollerLabel: 'Kočárek ✅', weatherTags: ['🌧️ Déšť · ❄️ Zima · 💨 Vítr'], desc: 'Velké interaktivní vědecké centrum. Hands-on exponáty, vodní zóny, experimenty. Děti mohou na vše sahat.', kids: 'Vysoká zábava, nízká námaha. Ideální 2–3h blok za špatného počasí. Lepší pro 5letého.',
+            details: { hours: 'Po–Pá 8–16, So–Ne 10–18', parking: 'Na místě Nitranská 410/10, 120 Kč/den', fee: 'Dospělý ~320 Kč online / ~390 na místě, Dítě ~210/260 Kč. Pod 3 roky zdarma. 10% sleva online.', time: '3–4 hodiny', food: 'Restaurace na místě. Centrum Babylon 5 min pěšky.', warnings: 'Ve všední dny plno školních výprav. iQLANDIA a iQPARK jsou v RŮZNÝCH budovách. 2letý ocení jen část exponátů.', bestTime: 'Víkendové ráno při otevření (10:00). Všední den mimo školní období.', web: 'iqlandia.cz' } },
+        en: { name: 'iQLANDIA', badges: ['Indoor', 'Rainy Day Pick'], loc: 'Liberec', dist: '2–3 h', strollerLabel: 'Stroller ✅', weatherTags: ['🌧️ Rain · ❄️ Cold · 💨 Wind'], desc: 'Large interactive science center with hands-on exhibits, water play zones, experiments.', kids: 'High engagement, low effort. Ideal 2–3h block when weather is bad. Better for 5yo.',
+            details: { hours: 'Mon–Fri 8–16, Sat–Sun 10–18', parking: 'On-site Nitranská 410/10, 120 CZK/day', fee: 'Adult ~320 CZK online / ~390 gate, Child ~210/260 CZK. Under 3 free. 10% off online.', time: '3–4 hours', food: 'On-site restaurant. Centrum Babylon 5 min walk.', warnings: 'Weekdays busy with school groups. iQLANDIA and iQPARK are in DIFFERENT buildings. 2yo gets limited value from main exhibits.', bestTime: 'Weekend morning at opening (10:00). Weekday outside school term.', web: 'iqlandia.cz' } }
     },
     {
         id: 6, category: 'indoor', good: 'rainy,cold', bad: 'sunny', stroller: 'yes',
         lat: 50.7553, lng: 15.0580, color: '#4f634f', icon: 'toys',
         link: 'https://mapy.cz/s/hejodunume',
-        cs: { name: 'iQPARK', badges: ['Vnitřní'], loc: 'Centrum Babylon, Liberec', dist: '1–2 h', strollerLabel: 'Kočárek ✅', weatherTags: ['🌧️ Déšť · ❄️ Zima'], desc: 'Menší, hravější verze iQLANDIA v Babylonu. Lezení, voda, jednoduché experimenty.', kids: 'Lepší pro 2letého než iQLANDIA. Méně zahlcující, více hmatové hry. Kombinujte s aquaparkem.' },
-        en: { name: 'iQPARK', badges: ['Indoor'], loc: 'Centrum Babylon, Liberec', dist: '1–2 h', strollerLabel: 'Stroller ✅', weatherTags: ['🌧️ Rain · ❄️ Cold'], desc: 'Smaller, more playful version of iQLANDIA inside Centrum Babylon. Climbing, water, simple experiments.', kids: 'Better fit than iQLANDIA for the 2yo. Less overwhelming, more tactile play.' }
+        cs: { name: 'iQPARK', badges: ['Vnitřní'], loc: 'Centrum Babylon, Liberec', dist: '1–2 h', strollerLabel: 'Kočárek ✅', weatherTags: ['🌧️ Déšť · ❄️ Zima'], desc: 'Menší, hravější verze iQLANDIA v Babylonu. Lezení, voda, jednoduché experimenty.', kids: 'Lepší pro 2letého než iQLANDIA. Méně zahlcující, více hmatové hry. Kombinujte s aquaparkem.',
+            details: { hours: 'Po–Pá 8–16, So–Ne 10–18', parking: 'Garáž Centrum Babylon', fee: 'Dospělý ~220 Kč online / ~270 na místě. Pod 3 roky zdarma.', time: '2–3 hodiny', food: 'Restaurace a kavárny v Centru Babylon', warnings: 'Vodní hrací zóna — vezměte náhradní oblečení! Plno za deštivých víkendů. 2letý potřebuje stálý dozor.', bestTime: 'Všední den ráno nebo So/Ne při otevření v 10:00.', web: 'centrumbabylon.cz/iqpark' } },
+        en: { name: 'iQPARK', badges: ['Indoor'], loc: 'Centrum Babylon, Liberec', dist: '1–2 h', strollerLabel: 'Stroller ✅', weatherTags: ['🌧️ Rain · ❄️ Cold'], desc: 'Smaller, more playful version of iQLANDIA inside Centrum Babylon. Climbing, water, simple experiments.', kids: 'Better fit than iQLANDIA for the 2yo. Less overwhelming, more tactile play.',
+            details: { hours: 'Mon–Fri 8–16, Sat–Sun 10–18', parking: 'Centrum Babylon garage', fee: 'Adult ~220 CZK online / ~270 gate. Under 3 free.', time: '2–3 hours', food: 'Centrum Babylon restaurants/cafes', warnings: 'Water play area — bring change of clothes! Crowded on rainy weekends. 2yo needs constant supervision.', bestTime: 'Weekday morning or Sat/Sun at 10:00 opening.', web: 'centrumbabylon.cz/iqpark' } }
     },
     {
         id: 7, category: 'indoor', good: 'rainy,cold', bad: '', stroller: 'partial',
         lat: 50.7553, lng: 15.0580, color: '#4f634f', icon: 'pool',
         link: 'https://mapy.cz/s/latuzovaha',
-        cs: { name: 'Centrum Babylon', badges: ['Vnitřní'], loc: 'Liberec', dist: '2–4 h', strollerLabel: 'Kočárek ⚠️', weatherTags: ['🌧️ Celodenní déšť'], desc: 'Vnitřní aquapark s tobogány, dětskými zónami, teplou vodou. Zábavní komplex s iQPARKem a restauracemi.', kids: 'Vysoké vybití energie. Skvělé, když potřebujete restart. Vyhněte se špičkovým víkendům.' },
-        en: { name: 'Centrum Babylon', badges: ['Indoor'], loc: 'Liberec', dist: '2–4 h', strollerLabel: 'Stroller ⚠️', weatherTags: ['🌧️ Full-day rain'], desc: 'Indoor aquapark with slides, kids zones, warm water. Entertainment complex.', kids: 'High energy burn. Great when everyone needs a reset. Avoid peak weekends — gets crowded.' }
+        cs: { name: 'Centrum Babylon', badges: ['Vnitřní'], loc: 'Liberec', dist: '2–4 h', strollerLabel: 'Kočárek ⚠️', weatherTags: ['🌧️ Celodenní déšť'], desc: 'Vnitřní aquapark s tobogány, dětskými zónami, teplou vodou. Zábavní komplex s iQPARKem a restauracemi.', kids: 'Vysoké vybití energie. Skvělé, když potřebujete restart. Vyhněte se špičkovým víkendům.',
+            details: { hours: 'Ne–Čt 10–21, Pá–So 10–22', parking: 'Garáž na místě, 1. hodina zdarma, pak 20 Kč/h, max 160 Kč/den', fee: 'Rodina 2+1 ~840–909 Kč celodenní. Pod 100 cm zdarma. 10% sleva online. Záloha 20 Kč na čipovou kartu.', time: '2–4 hodiny', food: 'Několik restaurací uvnitř komplexu', warnings: 'Víkendy dražší + plnější. 2letý potřebuje plavací pleny. Překročení 2h vstupenky = 40 Kč za 15 min.', bestTime: 'Všední den dopoledne 10:00–12:00', web: 'centrumbabylon.cz' } },
+        en: { name: 'Centrum Babylon', badges: ['Indoor'], loc: 'Liberec', dist: '2–4 h', strollerLabel: 'Stroller ⚠️', weatherTags: ['🌧️ Full-day rain'], desc: 'Indoor aquapark with slides, kids zones, warm water. Entertainment complex.', kids: 'High energy burn. Great when everyone needs a reset. Avoid peak weekends — gets crowded.',
+            details: { hours: 'Sun–Thu 10–21, Fri–Sat 10–22', parking: 'On-site garage, 1st hour free, then 20 CZK/h, max 160 CZK/day', fee: 'Family 2+1 ~840–909 CZK all-day. Under 100cm free. 10% off online. 20 CZK chip card deposit.', time: '2–4 hours', food: 'Multiple restaurants inside complex', warnings: 'Weekends more expensive + crowded. 2yo needs swim diapers. Exceeding 2h ticket = 40 CZK per 15 min.', bestTime: 'Weekday mornings 10:00–12:00', web: 'centrumbabylon.cz' } }
     },
     {
         id: 8, category: 'indoor', good: 'sunny,mild', bad: 'rainy', stroller: 'yes',
         lat: 50.7650, lng: 15.0700, color: '#384b38', icon: 'pets',
         link: 'https://mapy.cz/s/pabofapare',
-        cs: { name: 'ZOO Liberec', badges: ['Lehká'], loc: 'Liberec', dist: '2–4 km', strollerLabel: 'Kočárek ✅', weatherTags: ['☁️ Mírné počasí', '🌧️ Ne za lijáku'], desc: 'Tradiční zoo s vnitřními pavilony + venkovními výběhy. Vnitřní sekce jako záloha za deště.', kids: 'Flexibilní tempo — dá se kdykoli skončit. Obě děti si užijí. Kopce na cestách, ale kočárek zvládne.' },
-        en: { name: 'ZOO Liberec', badges: ['Easy'], loc: 'Liberec', dist: '2–4 km', strollerLabel: 'Stroller ✅', weatherTags: ['☁️ Mild weather', '🌧️ Not in heavy rain'], desc: 'Traditional zoo with indoor pavilions + outdoor enclosures.', kids: 'Flexible pacing — can cut short anytime. Both kids will love it.' }
+        cs: { name: 'ZOO Liberec', badges: ['Lehká'], loc: 'Liberec', dist: '2–4 km', strollerLabel: 'Kočárek ✅', weatherTags: ['☁️ Mírné počasí', '🌧️ Ne za lijáku'], desc: 'Tradiční zoo s vnitřními pavilony + venkovními výběhy. Vnitřní sekce jako záloha za deště.', kids: 'Flexibilní tempo — dá se kdykoli skončit. Obě děti si užijí. Kopce na cestách, ale kočárek zvládne.',
+            details: { hours: 'Léto (dub–říj) 9–17, Zima (lis–bře) 9–16', parking: 'Vlastní parkoviště nemá (od 11/2024). Zóna E — pouliční parkování poblíž.', fee: 'Dospělý 180/130 Kč (léto/zima), Dítě 120/90 Kč. Pod 3 roky zdarma. Rodina ~530 Kč léto.', time: '2–3 hodiny', food: 'Stánek uvnitř. Restaurace v parku Lidové sady.', warnings: 'Parkování komplikované — přijeďte brzy. Některé cesty strmé/kopcovité. Bílí tygři = hlavní atrakce.', bestTime: 'Ráno 9–11, zvířata jsou aktivnější. Všední dny.', web: 'zooliberec.cz' } },
+        en: { name: 'ZOO Liberec', badges: ['Easy'], loc: 'Liberec', dist: '2–4 km', strollerLabel: 'Stroller ✅', weatherTags: ['☁️ Mild weather', '🌧️ Not in heavy rain'], desc: 'Traditional zoo with indoor pavilions + outdoor enclosures.', kids: 'Flexible pacing — can cut short anytime. Both kids will love it.',
+            details: { hours: 'Summer (Apr–Oct) 9–17, Winter (Nov–Mar) 9–16', parking: 'No own parking since Nov 2024. Zone E street parking nearby.', fee: 'Adult 180/130 CZK (summer/winter), Child 120/90 CZK. Under 3 free. Family ~530 CZK summer.', time: '2–3 hours', food: 'Kiosk inside. Restaurants in Lidové sady park.', warnings: 'Parking tricky — arrive early. Some steep/hilly paths. White tigers = star attraction.', bestTime: 'Morning 9–11, animals more active. Weekdays.', web: 'zooliberec.cz' } }
     },
     {
         id: 9, category: 'daytrips', good: 'sunny,mild', bad: 'cold,rainy', stroller: 'partial',
         lat: 50.7700, lng: 15.4300, color: '#384b38', icon: 'landscape',
         link: 'https://mapy.cz/s/lodahazune',
-        cs: { name: 'Harrachov + Mumlavské vodopády', badges: ['Lehká'], loc: 'Harrachov', dist: '2–4 km', strollerLabel: 'Kočárek ⚠️', weatherTags: ['☁️ Mírné počasí'], desc: 'Krátká procházka k vodopádům + zastávka u sklárny s medvědy (krmení obvykle odpoledne).', kids: 'Několik mini-zážitků udržuje pozornost — vodopády, medvědi, sklo. Štěrk, takže krosna lepší.' },
-        en: { name: 'Harrachov + Mumlavské vodopády', badges: ['Easy'], loc: 'Harrachov', dist: '2–4 km', strollerLabel: 'Stroller ⚠️', weatherTags: ['☁️ Mild weather'], desc: 'Short walk to waterfalls + stop at glassworks with bears (feeding usually afternoon).', kids: 'Multiple mini-highlights keep attention — waterfalls, bears, glass demo.' }
+        cs: { name: 'Harrachov + Mumlavské vodopády', badges: ['Lehká'], loc: 'Harrachov', dist: '2–4 km', strollerLabel: 'Kočárek ⚠️', weatherTags: ['☁️ Mírné počasí'], desc: 'Krátká procházka k vodopádům + zastávka u sklárny s medvědy (krmení obvykle odpoledne).', kids: 'Několik mini-zážitků udržuje pozornost — vodopády, medvědi, sklo. Štěrk, takže krosna lepší.',
+            details: { hours: 'Vodopády 24/7. Sklárna Po–Ne 8–15. Medvědi: NEOVĚŘENO — nemusí existovat.', parking: 'Zdarma u mostu (omezeno), placené centrum 200 Kč/den, sportovní hala 100 Kč/den', fee: 'Vodopády zdarma. Sklárna 250 Kč dospělý, pod 6 let zdarma (prohlídka 45 min).', time: 'Půlden', food: 'Liščí bouda u vyhlídky na vodopád — zákusky, nápoje, terasa.', warnings: 'Skály u vodopádu VELMI kluzké — držte děti za ruku. Žádné zábrany. Parkoviště plné do 10h o víkendech. Medvědi nemusí existovat — ověřte na místě.', bestTime: 'Všední den ráno nebo před 9h o víkendech.', web: 'sklarnaharrachov.cz' } },
+        en: { name: 'Harrachov + Mumlavské vodopády', badges: ['Easy'], loc: 'Harrachov', dist: '2–4 km', strollerLabel: 'Stroller ⚠️', weatherTags: ['☁️ Mild weather'], desc: 'Short walk to waterfalls + stop at glassworks with bears (feeding usually afternoon).', kids: 'Multiple mini-highlights keep attention — waterfalls, bears, glass demo.',
+            details: { hours: 'Waterfalls 24/7. Glassworks Mon–Sun 8–15. Bears: UNVERIFIED — may not exist.', parking: 'Free at bridge (limited), paid central 200 CZK/day, sports hall 100 CZK/day', fee: 'Waterfalls free. Glassworks 250 CZK adult, under 6 free (45 min tour).', time: 'Half-day', food: 'Liščí bouda (Fox Hut) at waterfall viewpoint — cakes, drinks, terrace.', warnings: 'Waterfall rocks VERY slippery — hold children tight. No barriers at edge. Parking fills by 10am weekends. Bears may not exist — verify locally.', bestTime: 'Weekday morning or before 9am weekends.', web: 'sklarnaharrachov.cz' } }
     },
     {
         id: 10, category: 'daytrips', good: 'sunny,mild,rainy,cold,windy', bad: '', stroller: 'yes',
         lat: 50.7275, lng: 15.1720, color: '#384b38', icon: 'forest',
         link: 'https://mapy.cz/s/hoduvupase',
-        cs: { name: 'Lesopark Žižkův vrch', badges: ['Lehká', 'Kdykoli'], loc: 'Jablonec nad Nisou', dist: '2–3 km', strollerLabel: 'Kočárek ✅', weatherTags: ['🌦️ Jakékoli počasí'], desc: 'Lesopark s cestami, hřišti, vyhlídkami. Blízko města — žádná dlouhá cesta autem.', kids: 'Záloha, když se nechce daleko jezdit. Hřiště + les funguje pro obě děti.' },
-        en: { name: 'Lesopark Žižkův vrch', badges: ['Easy', 'Anytime'], loc: 'Jablonec nad Nisou', dist: '2–3 km', strollerLabel: 'Stroller ✅', weatherTags: ['🌦️ Any weather'], desc: 'Forest park with paths, playgrounds, viewpoints. Close to town.', kids: 'Safe fallback when you don\'t want to drive far. Playground + forest works for both ages.' }
+        cs: { name: 'Lesopark Žižkův vrch', badges: ['Lehká', 'Kdykoli'], loc: 'Jablonec nad Nisou', dist: '2–3 km', strollerLabel: 'Kočárek ✅', weatherTags: ['🌦️ Jakékoli počasí'], desc: 'Lesopark s cestami, hřišti, vyhlídkami. Blízko města — žádná dlouhá cesta autem.', kids: 'Záloha, když se nechce daleko jezdit. Hřiště + les funguje pro obě děti.',
+            details: { hours: '24/7 (veřejný park)', parking: 'Nové parkoviště u vstupu do parku. Zdarma.', fee: 'Zdarma', time: '1–2 hodiny', food: 'Nic v parku. Kavárny v centru Jablonce (10 min pěšky).', warnings: 'Svažitý park — některé cesty strmé. Rybník bez zábrany — hlídejte batolata. Omezené zázemí.', bestTime: 'Kdykoli za denního světla.', web: 'mestojablonec.cz' } },
+        en: { name: 'Lesopark Žižkův vrch', badges: ['Easy', 'Anytime'], loc: 'Jablonec nad Nisou', dist: '2–3 km', strollerLabel: 'Stroller ✅', weatherTags: ['🌦️ Any weather'], desc: 'Forest park with paths, playgrounds, viewpoints. Close to town.', kids: 'Safe fallback when you don\'t want to drive far. Playground + forest works for both ages.',
+            details: { hours: '24/7 (public park)', parking: 'New parking area at park entrance. Free.', fee: 'Free', time: '1–2 hours', food: 'Nothing in park. Cafes in Jablonec center (10 min walk).', warnings: 'Hillside park — some steep paths. Pond has no safety barriers — watch toddler. Limited facilities.', bestTime: 'Any daylight hours.', web: 'mestojablonec.cz' } }
     },
     {
         id: 11, category: 'daytrips', good: 'rainy', bad: 'sunny', stroller: 'yes',
         lat: 50.7700, lng: 15.4280, color: '#4f634f', icon: 'museum',
         link: 'https://mapy.cz/s/nocenukama',
-        cs: { name: 'Muzeum skla / Krkonošské muzeum', badges: ['Vnitřní'], loc: 'Harrachov / Jablonec', dist: '30–60 min', strollerLabel: 'Kočárek ✅', weatherTags: ['🌧️ Krátký déšť'], desc: 'Malá muzea — sklářství, horská historie. Rychlá kulturní zastávka.', kids: 'Funguje jako 30–60min výplň, ne hlavní plán. Ukázky skla zajímavé pro 5letého.' },
-        en: { name: 'Glass Museum / Krkonoše Museum', badges: ['Indoor'], loc: 'Harrachov / Jablonec', dist: '30–60 min', strollerLabel: 'Stroller ✅', weatherTags: ['🌧️ Short rain blocks'], desc: 'Small museums — glassmaking, mountain history. Quick cultural stop.', kids: 'Works as 30–60 min filler, not main plan. Glass demos interesting for the 5yo.' }
+        cs: { name: 'Muzeum skla / Krkonošské muzeum', badges: ['Vnitřní'], loc: 'Harrachov / Jablonec', dist: '30–60 min', strollerLabel: 'Kočárek ✅', weatherTags: ['🌧️ Krátký déšť'], desc: 'Malá muzea — sklářství, horská historie. Rychlá kulturní zastávka.', kids: 'Funguje jako 30–60min výplň, ne hlavní plán. Ukázky skla zajímavé pro 5letého.',
+            details: { hours: 'Muzeum skla Jablonec: Út–Ne 10–17. Hornické muzeum Harrachov: Kvě–Říj Út–Ne 9–17.', parking: 'Pouliční parkování. Muzeum skla: U Muzea 398/4, Jablonec.', fee: 'Muzeum skla: Dospělý 80 Kč, Rodina 200 Kč, Pod 6 let zdarma. Hornické: Muzeum 50 Kč, + důl 150/80 Kč. Pod 4 roky NELZE do dolu.', time: '45 min – 1,5 hodiny', food: 'Kavárny v centru Jablonce.', warnings: '"Nesahejte" prostředí je problém s 2letým. Důlní prohlídka: min 4 osoby, max 25, pod 4 roky ne, uvnitř zima.', bestTime: 'Kombinujte s Žižkovým vrchem (stejné město).', web: 'msb-jablonec.cz' } },
+        en: { name: 'Glass Museum / Krkonoše Museum', badges: ['Indoor'], loc: 'Harrachov / Jablonec', dist: '30–60 min', strollerLabel: 'Stroller ✅', weatherTags: ['🌧️ Short rain blocks'], desc: 'Small museums — glassmaking, mountain history. Quick cultural stop.', kids: 'Works as 30–60 min filler, not main plan. Glass demos interesting for the 5yo.',
+            details: { hours: 'Muzeum skla Jablonec: Tue–Sun 10–17. Hornické muzeum Harrachov: May–Oct Tue–Sun 9–17.', parking: 'Street parking. Muzeum skla: U Muzea 398/4, Jablonec.', fee: 'Muzeum skla: Adult 80 CZK, Family 200 CZK, Under 6 free. Hornické: Museum 50 CZK, + mine tour 150/80 CZK. Under 4 NOT allowed in mine.', time: '45 min – 1.5 hours', food: 'Cafes in Jablonec center.', warnings: '"Do not touch" environment challenging with 2yo. Mine tour: min 4 people, max 25, under 4 not allowed, cold inside.', bestTime: 'Combine with Žižkův vrch (same city).', web: 'msb-jablonec.cz' } }
     },
     {
         id: 12, category: 'daytrips', good: 'sunny,rainy,cold,windy,mild', bad: '', stroller: 'yes',
         lat: 50.7590, lng: 15.0560, color: '#4f634f', icon: 'local_cafe',
         link: 'https://mapy.cz/?q=d%C4%9Btsk%C3%BD%20koutek%20Liberec',
         isSearch: true,
-        cs: { name: 'Dětské hřiště + kavárna', badges: ['Záloha', 'Kdykoli'], loc: 'Liberec / Jablonec', dist: '1–2 h', strollerLabel: 'Kočárek ✅', weatherTags: ['Jakékoli počasí'], desc: 'Vnitřní hrací koutky s kávou pro rodiče. Záloha na málo energie.', kids: 'Chytrý tah, když jsou všichni unavení. Obě děti spokojené, rodiče mají kávu.' },
-        en: { name: 'Playground + café', badges: ['Fallback', 'Anytime'], loc: 'Liberec / Jablonec', dist: '1–2 h', strollerLabel: 'Stroller ✅', weatherTags: ['Any weather'], desc: 'Indoor play corners with coffee for parents. Low-energy fallback.', kids: 'Smart move when everyone is tired. Both kids happy, parents get coffee.' }
+        cs: { name: 'Dětské hřiště + kavárna', badges: ['Záloha', 'Kdykoli'], loc: 'Liberec / Jablonec', dist: '1–2 h', strollerLabel: 'Kočárek ✅', weatherTags: ['Jakékoli počasí'], desc: 'Vnitřní hrací koutky s kávou pro rodiče. Záloha na málo energie.', kids: 'Chytrý tah, když jsou všichni unavení. Obě děti spokojené, rodiče mají kávu.',
+            details: { hours: 'Bylo nebylo: Po/St/Pá 9–12:30+14–17:30, Út/Čt 9–12:30+14–18:30. Víkendy = soukromé akce.', parking: 'Dle lokality — centrum Liberce nebo CENTRAL Jablonec', fee: 'Bylo nebylo: Dítě 120 Kč půlden, dospělí zdarma. Monty/Človíčkov: podobné.', time: '1–2 hodiny', food: 'Monty má dobrou kávu a jídlo. Bylo nebylo útulnější, se zahrádkou.', warnings: 'Bylo nebylo o víkendech = soukromé akce. Člověčkov v CENTRAL mallu — menší, pro rychlou zastávku.', bestTime: 'Dopoledne všední den pro klid.', web: 'montykoutek.cz' } },
+        en: { name: 'Playground + café', badges: ['Fallback', 'Anytime'], loc: 'Liberec / Jablonec', dist: '1–2 h', strollerLabel: 'Stroller ✅', weatherTags: ['Any weather'], desc: 'Indoor play corners with coffee for parents. Low-energy fallback.', kids: 'Smart move when everyone is tired. Both kids happy, parents get coffee.',
+            details: { hours: 'Bylo nebylo: Mon/Wed/Fri 9–12:30+14–17:30, Tue/Thu 9–12:30+14–18:30. Weekends = private parties.', parking: 'Depends on location — Liberec center or CENTRAL mall Jablonec', fee: 'Bylo nebylo: Child 120 CZK half-day, adults free. Monty/Človíčkov: similar.', time: '1–2 hours', food: 'Monty has good coffee + food. Bylo nebylo cozier, with garden.', warnings: 'Bylo nebylo weekends = private parties only. Človíčkov in CENTRAL mall — smaller, quick stop.', bestTime: 'Weekday morning for quiet time.', web: 'montykoutek.cz' } }
     }
 ];
 
@@ -342,8 +378,8 @@ function renderCard(c) {
                 ${d.badges.map((b,i) => `<span class="${i===0 && c.id===1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-lowest/90 backdrop-blur text-primary'} text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">${b}</span>`).join('')}
             </div>
         </div>`
-        : `<div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
-            <div class="text-center p-8"><span class="material-symbols-outlined text-6xl text-outline-variant/40">${c.icon}</span></div>
+        : `<div class="relative h-44 sm:h-56 overflow-hidden flex items-center justify-center" style="background: linear-gradient(135deg, ${c.color}18 0%, ${c.color}08 50%, #f6f3eb 100%);">
+            <div class="text-center p-8"><span class="material-symbols-outlined text-6xl" style="color: ${c.color}; opacity: 0.35;">${c.icon}</span></div>
             <div class="absolute top-3 left-3 flex gap-1.5">
                 ${d.badges.map(b => `<span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">${b}</span>`).join('')}
             </div>
@@ -365,15 +401,52 @@ function renderCard(c) {
                 ${d.weatherTags.map(wt => `<span class="${wt.includes('❌') || wt.includes('Ne ') ? 'bg-tertiary-fixed text-on-tertiary-fixed-variant' : 'bg-primary-fixed text-on-primary-fixed-variant'} text-[10px] font-medium px-2.5 py-0.5 rounded-full">${wt}</span>`).join('')}
             </div>
             <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">${d.desc}</p>
-            <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+            <div class="bg-surface-container-low p-4 rounded-xl mb-4 flex-1">
                 <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">${t('kids')}</p>
                 <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">${d.kids}</p>
             </div>
+            ${d.details ? `<button onclick="toggleDetails(${c.id})" id="toggle-${c.id}" class="detail-toggle w-full flex items-center justify-center gap-1.5 py-2.5 mb-3 text-xs font-bold text-primary hover:text-primary-container transition-colors active:scale-[0.98]">
+                <span class="label">${t('btn.more')}</span>
+                <span class="material-symbols-outlined text-sm chevron">expand_more</span>
+            </button>
+            <div id="details-${c.id}" class="detail-section mb-4">
+                <div class="bg-surface-container-low rounded-xl p-4 space-y-3">
+                    ${renderDetailRow('schedule', t('detail.hours'), d.details.hours)}
+                    ${renderDetailRow('local_parking', t('detail.parking'), d.details.parking)}
+                    ${renderDetailRow('payments', t('detail.fee'), d.details.fee)}
+                    ${renderDetailRow('timer', t('detail.time'), d.details.time)}
+                    ${renderDetailRow('restaurant', t('detail.food'), d.details.food)}
+                    ${renderDetailRow('warning', t('detail.warnings'), d.details.warnings)}
+                    ${renderDetailRow('wb_sunny', t('detail.bestTime'), d.details.bestTime)}
+                    ${d.details.web ? `<div class="flex items-start gap-2.5">
+                        <span class="material-symbols-outlined text-sm text-primary mt-0.5">language</span>
+                        <div><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${t('detail.web')}</p>
+                        <a href="https://${d.details.web}" target="_blank" class="text-xs text-primary underline underline-offset-2 hover:text-primary-container">${d.details.web}</a></div>
+                    </div>` : ''}
+                </div>
+            </div>` : ''}
             <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="${c.link}" target="_blank">
                 <span class="material-symbols-outlined text-sm">map</span> ${c.isSearch ? t('btn.search') : t('btn.mapy')}
             </a>
         </div>
     </div>`;
+}
+
+function renderDetailRow(icon, label, value) {
+    if (!value) return '';
+    return `<div class="flex items-start gap-2.5">
+        <span class="material-symbols-outlined text-sm text-primary mt-0.5">${icon}</span>
+        <div><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${label}</p>
+        <p class="text-xs leading-relaxed text-on-surface">${value}</p></div>
+    </div>`;
+}
+
+function toggleDetails(id) {
+    const section = document.getElementById('details-' + id);
+    const btn = document.getElementById('toggle-' + id);
+    const isOpen = section.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+    btn.querySelector('.label').textContent = isOpen ? t('btn.less') : t('btn.more');
 }
 
 function renderCards() {
