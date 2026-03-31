@@ -88,7 +88,7 @@ tailwind.config = {
 <body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen pb-24">
 
 <!-- Header + Filter (sticky together) -->
-<header class="sticky top-0 w-full z-50 bg-[#fcf9f1]/80 backdrop-blur-xl">
+<header class="sticky top-0 w-full z-50 bg-[#fcf9f1]/95 backdrop-blur-xl">
     <div class="flex flex-col px-4 sm:px-6 py-3 sm:py-4 max-w-screen-xl mx-auto">
         <div class="flex items-center gap-2 sm:gap-3">
             <span class="material-symbols-outlined text-primary text-2xl sm:text-3xl">park</span>
@@ -123,7 +123,7 @@ tailwind.config = {
         <span class="h-px flex-1 bg-outline-variant/20"></span>
     </h2>
     <div id="planner-days"></div>
-    <p class="text-[10px] text-on-surface-variant mt-4 opacity-50 text-center">Open-Meteo API · Velké Hamry</p>
+    <p class="text-[11px] text-on-surface-variant mt-4 opacity-50 text-center">Open-Meteo API · Velké Hamry</p>
 </div>
 
 <!-- ═══ PREP SECTION ═══ -->
@@ -550,7 +550,7 @@ function t(key) { return T[currentLang][key] || T['en'][key] || key; }
 
 function renderFilters() {
     document.getElementById('filter-bar').innerHTML = FILTERS.map(f =>
-        `<button onclick="toggleFilter(this)" data-filter="${f.key}" class="filter-pill bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full flex items-center gap-1.5 text-xs sm:text-sm font-bold hover:bg-surface-container-highest transition-all active:scale-95">
+        `<button onclick="toggleFilter(this)" data-filter="${f.key}" aria-label="${t('filter.' + f.key)}" class="filter-pill bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full flex items-center gap-1.5 text-xs sm:text-sm font-bold hover:bg-surface-container-highest transition-all active:scale-95">
             <span class="material-symbols-outlined text-[18px]">${f.icon}</span> ${t('filter.' + f.key)}
         </button>`
     ).join('');
@@ -565,22 +565,22 @@ function renderCard(c) {
                 ${photos.map(p => `<img class="h-full object-cover flex-shrink-0" style="width:${100/photos.length}%;" src="${p}" alt="${d.name}" loading="lazy"/>`).join('')}
             </div>
             ${photos.length > 1 ? `
-            <button onclick="slideCarousel(${c.id},-1)" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-on-surface/40 text-surface flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
+            <button onclick="slideCarousel(${c.id},-1)" aria-label="Previous" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-on-surface/40 text-surface flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
                 <span class="material-symbols-outlined text-sm">chevron_left</span>
             </button>
-            <button onclick="slideCarousel(${c.id},1)" class="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-on-surface/40 text-surface flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
+            <button onclick="slideCarousel(${c.id},1)" aria-label="Next" class="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-on-surface/40 text-surface flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity active:scale-90">
                 <span class="material-symbols-outlined text-sm">chevron_right</span>
             </button>
             <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
                 ${photos.map((_,i) => `<span class="carousel-dot w-1.5 h-1.5 rounded-full ${i===0 ? 'bg-surface' : 'bg-surface/50'}" data-carousel="${c.id}" data-idx="${i}"></span>`).join('')}
             </div>` : ''}
             <div class="absolute top-3 left-3 flex gap-1.5">
-                ${d.badges.map((b,i) => `<span class="${i===0 && c.id===1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-lowest/90 backdrop-blur text-primary'} text-[11px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm">${b}</span>`).join('')}
+                ${d.badges.map((b,i) => `<span class="${i===0 && c.id===1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-lowest/90 backdrop-blur text-primary'} text-[11px] sm:text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm">${b}</span>`).join('')}
             </div>
         </div>`
         : `<div class="relative h-44 sm:h-56 overflow-hidden flex items-center justify-center bg-surface-container-low">
             <div class="absolute top-3 left-3 flex gap-1.5">
-                ${d.badges.map(b => `<span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[11px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">${b}</span>`).join('')}
+                ${d.badges.map(b => `<span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[11px] sm:text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">${b}</span>`).join('')}
             </div>
         </div>`;
     const isTime = d.dist.includes('h') || d.dist.includes('min');
@@ -595,25 +595,25 @@ function renderCard(c) {
                 </div>
             </div>
             <div class="flex flex-wrap gap-1.5 mb-4">
-                <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">${d.loc}</span>
-                <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">${d.strollerLabel}</span>
-                ${d.weatherTags.map(wt => `<span class="${wt.includes('❌') || wt.includes('Ne ') ? 'bg-tertiary-fixed text-on-tertiary-fixed-variant' : 'bg-primary-fixed text-on-primary-fixed-variant'} text-[10px] font-medium px-2.5 py-0.5 rounded-full">${wt}</span>`).join('')}
+                <span class="bg-surface-container text-on-surface-variant text-[11px] font-medium px-2.5 py-0.5 rounded-full">${d.loc}</span>
+                <span class="bg-primary-fixed text-on-primary-fixed-variant text-[11px] font-medium px-2.5 py-0.5 rounded-full">${d.strollerLabel}</span>
+                ${d.weatherTags.map(wt => `<span class="${wt.includes('❌') || wt.includes('Ne ') ? 'bg-tertiary-fixed text-on-tertiary-fixed-variant' : 'bg-primary-fixed text-on-primary-fixed-variant'} text-[11px] font-medium px-2.5 py-0.5 rounded-full">${wt}</span>`).join('')}
             </div>
             <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">${d.desc}</p>
             <div class="bg-surface-container-low p-4 rounded-xl mb-4 flex-1">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">${t('kids')}</p>
+                <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">${t('kids')}</p>
                 <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">${d.kids}</p>
             </div>
             <!-- Thumbs + Day assign -->
             <div class="flex items-center gap-2 mb-4">
-                <button data-thumb="1" onclick="setRating(${c.id}, 1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === 1 ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
+                <button data-thumb="1" onclick="setRating(${c.id}, 1)" aria-label="Like" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === 1 ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
                     <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === 1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_up</span>
                 </button>
-                <button data-thumb="-1" onclick="setRating(${c.id}, -1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === -1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
+                <button data-thumb="-1" onclick="setRating(${c.id}, -1)" aria-label="Dislike" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === -1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
                     <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === -1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_down</span>
                 </button>
                 <div class="ml-auto">
-                    <select onchange="assignDay(${c.id}, this.value)" class="text-xs font-bold bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border-0 appearance-none cursor-pointer" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;">
+                    <select onchange="assignDay(${c.id}, this.value)" aria-label="Assign to day" class="text-xs font-bold bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border-0 appearance-none cursor-pointer" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;">
                         <option value="" ${!getUserData().days[c.id] ? 'selected' : ''}>${t('assign.none')}</option>
                         <option value="thu" ${getUserData().days[c.id]==='thu' ? 'selected' : ''}>${t('assign.thu')}</option>
                         <option value="fri" ${getUserData().days[c.id]==='fri' ? 'selected' : ''}>${t('assign.fri')}</option>
@@ -631,9 +631,9 @@ function renderCard(c) {
                 <div class="bg-surface-container-low rounded-xl p-4 space-y-3">
                     ${c.gmaps ? `<div class="flex items-start gap-2.5">
                         <span class="material-symbols-outlined text-sm text-tertiary mt-0.5">star</span>
-                        <div><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">Google Maps</p>
+                        <div><p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">Google Maps</p>
                         <a href="${c.gmaps.url}" target="_blank" class="text-xs text-primary hover:text-primary-container flex items-center gap-1">
-                            <span class="font-bold text-tertiary">${c.gmaps.rating}</span><span class="text-tertiary text-[10px]">★</span>
+                            <span class="font-bold text-tertiary">${c.gmaps.rating}</span><span class="text-tertiary text-[11px]">★</span>
                             <span class="text-on-surface-variant">(${c.gmaps.reviews})</span>
                             <span class="material-symbols-outlined text-xs">open_in_new</span>
                         </a></div>
@@ -647,13 +647,23 @@ function renderCard(c) {
                     ${renderDetailRow('wb_sunny', t('detail.bestTime'), d.details.bestTime)}
                     ${d.details.web ? `<div class="flex items-start gap-2.5">
                         <span class="material-symbols-outlined text-sm text-primary mt-0.5">language</span>
-                        <div><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${t('detail.web')}</p>
+                        <div><p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${t('detail.web')}</p>
                         <a href="https://${d.details.web}" target="_blank" class="text-xs text-primary underline underline-offset-2 hover:text-primary-container">${d.details.web}</a></div>
                     </div>` : ''}
+                    <div class="mt-3 pt-2">
+                        <textarea
+                            placeholder="${currentLang === 'cs' ? 'Poznámky...' : 'Notes...'}"
+                            onchange="saveNote(${c.id}, this.value)"
+                            class="w-full text-xs bg-surface-container-lowest text-on-surface p-3 rounded-lg resize-none h-16 placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-1 focus:ring-primary"
+                        >${getUserData().notes && getUserData().notes[c.id] || ''}</textarea>
+                    </div>
                 </div>
             </div>` : ''}
             <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="${c.link}" target="_blank">
                 <span class="material-symbols-outlined text-sm">map</span> ${c.isSearch ? t('btn.search') : t('btn.mapy')}
+            </a>
+            <a class="w-full bg-surface-container-high text-on-surface py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs mt-2 hover:bg-surface-container-highest transition-all active:scale-[0.98]" href="https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}" target="_blank">
+                <span class="material-symbols-outlined text-sm">navigation</span> ${currentLang === 'cs' ? 'Navigovat' : 'Navigate'}
             </a>
         </div>
     </div>`;
@@ -663,7 +673,7 @@ function renderDetailRow(icon, label, value) {
     if (!value) return '';
     return `<div class="flex items-start gap-2.5">
         <span class="material-symbols-outlined text-sm text-primary mt-0.5">${icon}</span>
-        <div><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${label}</p>
+        <div><p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${label}</p>
         <p class="text-xs leading-relaxed text-on-surface">${value}</p></div>
     </div>`;
 }
@@ -690,7 +700,10 @@ function getRoomId() {
         room = localStorage.getItem('vh-room');
     }
     if (!room) {
-        room = Math.random().toString(36).substring(2, 8);
+        const words1 = ['les','hora','potok','skala','louka','jezero','stezka','udoli'];
+        const words2 = ['zeleny','modry','tichy','rychly','maly','velky','slunecni','lesni'];
+        const num = Math.floor(Math.random() * 99) + 1;
+        room = words2[Math.floor(Math.random()*words2.length)] + '-' + words1[Math.floor(Math.random()*words1.length)] + '-' + num;
     }
     // Persist room to URL and localStorage
     localStorage.setItem('vh-room', room);
@@ -707,7 +720,7 @@ const db = firebase.database();
 const dataRef = db.ref('rooms/' + ROOM);
 
 // Local cache of shared data
-let _sharedData = { ratings: {}, days: {}, meals: {}, packing: {} };
+let _sharedData = { ratings: {}, days: {}, meals: {}, packing: {}, shopping: {}, notes: {} };
 let _firebaseReady = false;
 
 function getUserData() { return _sharedData; }
@@ -716,6 +729,8 @@ function ensureUserData() {
     if (!_sharedData.days) _sharedData.days = {};
     if (!_sharedData.meals) _sharedData.meals = {};
     if (!_sharedData.packing) _sharedData.packing = {};
+    if (!_sharedData.shopping) _sharedData.shopping = {};
+    if (!_sharedData.notes) _sharedData.notes = {};
     return _sharedData;
 }
 function saveUserData(data) {
@@ -851,8 +866,8 @@ function renderMealSelect(day, mealType, icon) {
     const selected = getMealForDay(day, mealType);
     const label = t('meal.' + mealType);
     return `<div class="flex items-center gap-2">
-        <span class="text-[10px] flex-shrink-0">${icon}</span>
-        <span class="text-[10px] text-on-surface-variant flex-shrink-0">${label}</span>
+        <span class="text-[11px] flex-shrink-0">${icon}</span>
+        <span class="text-[11px] text-on-surface-variant flex-shrink-0">${label}</span>
         <select onchange="setMeal('${day}','${mealType}',this.value)" class="flex-1 text-[11px] font-medium bg-surface-container-lowest text-on-surface px-2 py-1 rounded-lg border-0 appearance-none cursor-pointer truncate" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 4px center; padding-right: 18px; min-width: 0;">
             <option value="" ${selected === null ? 'selected' : ''}>—</option>
             ${options.map((o, i) => `<option value="${i}" ${selected === i ? 'selected' : ''}>${o[currentLang]}</option>`).join('')}
@@ -897,7 +912,7 @@ function renderPlanner() {
                         <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold text-on-primary flex-shrink-0" style="background:${c.color};">${c.id}</div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-bold text-on-surface truncate">${d.name}</p>
-                            <p class="text-[10px] text-on-surface-variant">${d.dist} · ${d.loc}</p>
+                            <p class="text-[11px] text-on-surface-variant">${d.dist} · ${d.loc}</p>
                         </div>
                         ${rating === 1 ? `<span class="material-symbols-outlined text-sm text-primary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_up</span>` : rating === -1 ? `<span class="material-symbols-outlined text-sm text-tertiary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_down</span>` : ''}
                     </div>`;
@@ -905,8 +920,8 @@ function renderPlanner() {
             ${w ? `<div class="flex items-center gap-1.5 mt-3 pt-3">
                 <span class="material-symbols-outlined text-base ${w.code<=2?'text-tertiary':w.code>=61?'text-primary':'text-on-surface-variant'}">${w.icon}</span>
                 <span class="text-xs font-bold text-on-surface">${w.hi}°/${w.lo}°</span>
-                <span class="text-[10px] text-on-surface-variant">${currentLang === 'cs' ? w.csLabel : w.enLabel}</span>
-                ${w.rain > 0 ? `<span class="text-[10px] text-on-surface-variant">· 💧${w.rain}mm</span>` : ''}
+                <span class="text-[11px] text-on-surface-variant">${currentLang === 'cs' ? w.csLabel : w.enLabel}</span>
+                ${w.rain > 0 ? `<span class="text-[11px] text-on-surface-variant">· 💧${w.rain}mm</span>` : ''}
             </div>` : ''}
             ${renderMealPlan(day, cards)}
         </div>`;
@@ -968,7 +983,7 @@ function renderTips() {
     const catColors = { safety: 'tertiary', packing: 'primary', local: 'secondary' };
     let html = `<div class="flex items-center justify-between bg-surface-container-lowest rounded-2xl p-4 mb-6">
         <div>
-            <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${currentLang === 'cs' ? 'Sdílený plán' : 'Shared plan'}</p>
+            <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${currentLang === 'cs' ? 'Sdílený plán' : 'Shared plan'}</p>
             <p class="text-xs text-on-surface-variant">${currentLang === 'cs' ? 'Kód místnosti:' : 'Room code:'} <span class="font-bold text-on-surface" id="room-label">${ROOM}</span></p>
         </div>
         <button onclick="shareRoom()" class="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-on-primary text-xs font-bold hover:opacity-90 active:scale-95 transition-all">
@@ -1006,9 +1021,9 @@ function renderTips() {
 
     html += `<div class="flex justify-center items-center gap-1 mt-8 pt-4">
         <span class="material-symbols-outlined text-xs text-outline-variant">translate</span>
-        <button onclick="setLang('cs')" id="lang-cs" class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded ${currentLang === 'cs' ? 'text-primary' : 'text-outline-variant'}">Čeština</button>
-        <span class="text-[10px] text-outline-variant">·</span>
-        <button onclick="setLang('en')" id="lang-en" class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded ${currentLang === 'en' ? 'text-primary' : 'text-outline-variant'}">English</button>
+        <button onclick="setLang('cs')" id="lang-cs" class="text-[11px] font-bold uppercase tracking-widest px-2 py-1 rounded ${currentLang === 'cs' ? 'text-primary' : 'text-outline-variant'}">Čeština</button>
+        <span class="text-[11px] text-outline-variant">·</span>
+        <button onclick="setLang('en')" id="lang-en" class="text-[11px] font-bold uppercase tracking-widest px-2 py-1 rounded ${currentLang === 'en' ? 'text-primary' : 'text-outline-variant'}">English</button>
     </div>`;
 
     document.getElementById('tips-root').innerHTML = html;
@@ -1051,6 +1066,7 @@ function renderPrep() {
     ];
 
     if (!ud.packing) { ud.packing = {}; saveUserData(ud); }
+    if (!ud.shopping) { ud.shopping = {}; saveUserData(ud); }
 
     let html = `<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mb-5 flex items-center gap-3">
         ${t('prep.packing')}<span class="h-px flex-1 bg-outline-variant/20"></span>
@@ -1066,18 +1082,24 @@ function renderPrep() {
         `).join('')}
     </div>
 
-    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mb-5 flex items-center gap-3">
+    const totalShoppingItems = shoppingItems.reduce((sum, cat) => sum + cat.items.length, 0);
+    const checkedShoppingItems = Object.values(ud.shopping).filter(Boolean).length;
+
+    html += `<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary mb-5 flex items-center gap-3">
         ${t('prep.shopping')}<span class="h-px flex-1 bg-outline-variant/20"></span>
+        <span class="text-xs font-medium text-on-surface-variant">${checkedShoppingItems}/${totalShoppingItems}</span>
     </h2>
-    ${shoppingItems.map(cat => `
+    ${shoppingItems.map((cat, ci) => `
         <div class="mb-5">
-            <p class="text-[10px] font-extrabold uppercase tracking-widest text-tertiary mb-2">${cat.cat}</p>
-            <div class="bg-surface-container-lowest rounded-xl p-4">
-                <ul class="space-y-1.5">
-                    ${cat.items.map(item => `<li class="text-sm text-on-surface flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-primary/40 flex-shrink-0"></span>${item}
-                    </li>`).join('')}
-                </ul>
+            <p class="text-[11px] font-extrabold uppercase tracking-widest text-tertiary mb-2">${cat.cat}</p>
+            <div class="bg-surface-container-lowest rounded-xl p-4 space-y-1">
+                ${cat.items.map((item, ii) => {
+                    const key = 's_' + ci + '_' + ii;
+                    return `<label class="flex items-center gap-3 py-1.5 cursor-pointer">
+                        <input type="checkbox" ${ud.shopping[key] ? 'checked' : ''} onchange="toggleShopping('${key}')" class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary accent-primary">
+                        <span class="text-sm ${ud.shopping[key] ? 'line-through text-on-surface-variant' : 'text-on-surface'}">${item}</span>
+                    </label>`;
+                }).join('')}
             </div>
         </div>
     `).join('')}`;
@@ -1092,6 +1114,23 @@ function togglePacking(idx) {
     saveUserData(ud);
     dataRef.child('packing/' + idx).set(ud.packing[idx]);
     renderPrep();
+}
+
+function toggleShopping(key) {
+    const ud = ensureUserData();
+    if (!ud.shopping) ud.shopping = {};
+    ud.shopping[key] = !ud.shopping[key];
+    saveUserData(ud);
+    dataRef.child('shopping/' + key).set(ud.shopping[key]);
+    renderPrep();
+}
+
+function saveNote(cardId, text) {
+    const ud = ensureUserData();
+    if (!ud.notes) ud.notes = {};
+    ud.notes[cardId] = text;
+    saveUserData(ud);
+    dataRef.child('notes/' + cardId).set(text);
 }
 
 function renderAll() {
@@ -1291,7 +1330,7 @@ function renderWeatherBadge(w) {
         <span class="material-symbols-outlined text-xl ${w.code<=2?'text-tertiary':w.code>=61?'text-primary':'text-on-surface-variant'}">${w.icon}</span>
         <div class="text-left">
             <p class="text-xs font-bold text-on-surface">${w.hi}°/${w.lo}°</p>
-            <p class="text-[10px] text-on-surface-variant">${label}${w.rain > 0 ? ` · 💧${w.rain}mm` : ''}${w.wind > 30 ? ` · 💨${w.wind}km/h` : ''}</p>
+            <p class="text-[11px] text-on-surface-variant">${label}${w.rain > 0 ? ` · 💧${w.rain}mm` : ''}${w.wind > 30 ? ` · 💨${w.wind}km/h` : ''}</p>
         </div>
     </div>`;
 }
