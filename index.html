@@ -125,6 +125,9 @@ tailwind.config = {
             <button onclick="toggleFilter(this)" data-filter="windy" class="filter-pill bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full flex items-center gap-1.5 text-xs sm:text-sm font-bold hover:bg-surface-container-highest transition-all active:scale-95">
                 <span class="material-symbols-outlined text-[18px]">air</span> Windy
             </button>
+            <button onclick="toggleFilter(this)" data-filter="mild" class="filter-pill bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full flex items-center gap-1.5 text-xs sm:text-sm font-bold hover:bg-surface-container-highest transition-all active:scale-95">
+                <span class="material-symbols-outlined text-[18px]">cloud</span> Mild
+            </button>
             <button onclick="toggleFilter(this)" data-filter="stroller" class="filter-pill bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full flex items-center gap-1.5 text-xs sm:text-sm font-bold hover:bg-surface-container-highest transition-all active:scale-95">
                 <span class="material-symbols-outlined text-[18px]">child_care</span> Stroller
             </button>
@@ -284,6 +287,309 @@ tailwind.config = {
             </div>
         </div>
     </div>
+
+    <!-- Category: Liberec Indoor -->
+    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mt-8 mb-4 sm:mb-6 flex items-center gap-3">
+        Liberec Indoor
+        <span class="h-px flex-1 bg-outline-variant/20"></span>
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+
+        <!-- Card 5: iQLANDIA -->
+        <div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+             id="card-5" data-good="rainy,cold,windy" data-bad="sunny" data-stroller="yes">
+            <div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
+                <div class="text-center p-8">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant/40">science</span>
+                    <p class="text-xs text-on-surface-variant mt-2">Interactive science center</p>
+                </div>
+                <div class="absolute top-3 left-3 flex gap-1.5">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Indoor</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Rainy Day Pick</span>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg sm:text-xl font-extrabold text-on-surface leading-tight">iQLANDIA</h3>
+                    <div class="flex items-center text-primary font-bold text-xs whitespace-nowrap ml-2">
+                        <span class="material-symbols-outlined mr-0.5 text-sm">schedule</span>2–3 h
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Liberec</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Stroller ✅</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">🌧️ Rain · ❄️ Cold · 💨 Wind</span>
+                </div>
+                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">Large interactive science center with hands-on exhibits, water play zones, experiments. Kids can touch everything.</p>
+                <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Kids Guide</p>
+                    <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">High engagement, low effort. Ideal 2–3h block when weather is bad. Better for 5yo — some exhibits too complex for 2yo.</p>
+                </div>
+                <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="https://mapy.cz/s/dufokazecu" target="_blank">
+                    <span class="material-symbols-outlined text-sm">map</span> Open in Mapy.cz
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 6: iQPARK -->
+        <div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+             id="card-6" data-good="rainy,cold" data-bad="sunny" data-stroller="yes">
+            <div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
+                <div class="text-center p-8">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant/40">toys</span>
+                    <p class="text-xs text-on-surface-variant mt-2">Kids science playground</p>
+                </div>
+                <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Indoor</span>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg sm:text-xl font-extrabold text-on-surface leading-tight">iQPARK</h3>
+                    <div class="flex items-center text-primary font-bold text-xs whitespace-nowrap ml-2">
+                        <span class="material-symbols-outlined mr-0.5 text-sm">schedule</span>1–2 h
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Centrum Babylon, Liberec</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Stroller ✅</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">🌧️ Rain · ❄️ Cold</span>
+                </div>
+                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">Smaller, more playful version of iQLANDIA inside Centrum Babylon. Climbing, water, simple experiments.</p>
+                <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Kids Guide</p>
+                    <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">Better fit than iQLANDIA for the 2yo. Less overwhelming, more tactile play. Can combine with Babylon aquapark.</p>
+                </div>
+                <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="https://mapy.cz/s/hejodunume" target="_blank">
+                    <span class="material-symbols-outlined text-sm">map</span> Open in Mapy.cz
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 7: Centrum Babylon -->
+        <div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+             id="card-7" data-good="rainy,cold" data-bad="" data-stroller="partial">
+            <div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
+                <div class="text-center p-8">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant/40">pool</span>
+                    <p class="text-xs text-on-surface-variant mt-2">Indoor aquapark</p>
+                </div>
+                <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Indoor</span>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg sm:text-xl font-extrabold text-on-surface leading-tight">Centrum Babylon</h3>
+                    <div class="flex items-center text-primary font-bold text-xs whitespace-nowrap ml-2">
+                        <span class="material-symbols-outlined mr-0.5 text-sm">schedule</span>2–4 h
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Liberec</span>
+                    <span class="bg-secondary-container text-on-secondary-container text-[10px] font-medium px-2.5 py-0.5 rounded-full">Stroller ⚠️</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">🌧️ Full-day rain</span>
+                </div>
+                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">Indoor aquapark with slides, kids zones, warm water. Also entertainment complex with iQPARK, restaurants.</p>
+                <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Kids Guide</p>
+                    <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">High energy burn. Great when everyone needs a reset. Avoid peak weekends — gets crowded.</p>
+                </div>
+                <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="https://mapy.cz/s/latuzovaha" target="_blank">
+                    <span class="material-symbols-outlined text-sm">map</span> Open in Mapy.cz
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 8: ZOO Liberec -->
+        <div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+             id="card-8" data-good="sunny,mild" data-bad="rainy" data-stroller="yes">
+            <div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
+                <div class="text-center p-8">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant/40">pets</span>
+                    <p class="text-xs text-on-surface-variant mt-2">Traditional zoo</p>
+                </div>
+                <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur text-emerald-700 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Easy</span>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg sm:text-xl font-extrabold text-on-surface leading-tight">ZOO Liberec</h3>
+                    <div class="flex items-center text-primary font-bold text-xs whitespace-nowrap ml-2">
+                        <span class="material-symbols-outlined mr-0.5 text-sm">directions_walk</span>2–4 km
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Liberec</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Stroller ✅</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">☁️ Mild weather</span>
+                    <span class="bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">🌧️ Not in heavy rain</span>
+                </div>
+                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">Traditional zoo with indoor pavilions + outdoor enclosures. Indoor sections available for rain backup.</p>
+                <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Kids Guide</p>
+                    <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">Flexible pacing — can cut short anytime. Both kids will love it. Some hills on paths but stroller-doable.</p>
+                </div>
+                <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="https://mapy.cz/s/pabofapare" target="_blank">
+                    <span class="material-symbols-outlined text-sm">map</span> Open in Mapy.cz
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category: Day Trips -->
+    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mt-8 mb-4 sm:mb-6 flex items-center gap-3">
+        Day Trips & Quick Stops
+        <span class="h-px flex-1 bg-outline-variant/20"></span>
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+
+        <!-- Card 9: Harrachov -->
+        <div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+             id="card-9" data-good="sunny,mild" data-bad="cold,rainy" data-stroller="partial">
+            <div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
+                <div class="text-center p-8">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant/40">waterfall_chart</span>
+                    <p class="text-xs text-on-surface-variant mt-2">Waterfalls + bears</p>
+                </div>
+                <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur text-emerald-700 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Easy</span>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg sm:text-xl font-extrabold text-on-surface leading-tight">Harrachov + Mumlavské vodopády</h3>
+                    <div class="flex items-center text-primary font-bold text-xs whitespace-nowrap ml-2">
+                        <span class="material-symbols-outlined mr-0.5 text-sm">directions_walk</span>2–4 km
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Harrachov</span>
+                    <span class="bg-secondary-container text-on-secondary-container text-[10px] font-medium px-2.5 py-0.5 rounded-full">Stroller ⚠️</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">☁️ Mild weather</span>
+                </div>
+                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">Short walk to waterfalls + stop at glassworks area with bears (feeding usually afternoon). Multiple mini-highlights.</p>
+                <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Kids Guide</p>
+                    <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">Multiple mini-highlights keep attention — waterfalls, bears, glass demo. Gravel paths so carrier better than stroller on some sections.</p>
+                </div>
+                <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="https://mapy.cz/s/lodahazune" target="_blank">
+                    <span class="material-symbols-outlined text-sm">map</span> Open in Mapy.cz
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 10: Žižkův vrch -->
+        <div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+             id="card-10" data-good="sunny,mild,rainy,cold,windy" data-bad="" data-stroller="yes">
+            <div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
+                <div class="text-center p-8">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant/40">forest</span>
+                    <p class="text-xs text-on-surface-variant mt-2">Forest park + playgrounds</p>
+                </div>
+                <div class="absolute top-3 left-3 flex gap-1.5">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur text-emerald-700 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Easy</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Anytime</span>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg sm:text-xl font-extrabold text-on-surface leading-tight">Lesopark Žižkův vrch</h3>
+                    <div class="flex items-center text-primary font-bold text-xs whitespace-nowrap ml-2">
+                        <span class="material-symbols-outlined mr-0.5 text-sm">directions_walk</span>2–3 km
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Jablonec nad Nisou</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Stroller ✅</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">🌦️ Any weather</span>
+                </div>
+                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">Forest park with paths, playgrounds, viewpoints. Close to town — no long drive needed.</p>
+                <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Kids Guide</p>
+                    <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">Safe fallback when you don't want to drive far. Playground + forest combo works for both ages.</p>
+                </div>
+                <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="https://mapy.cz/s/hoduvupase" target="_blank">
+                    <span class="material-symbols-outlined text-sm">map</span> Open in Mapy.cz
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 11: Museums -->
+        <div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+             id="card-11" data-good="rainy" data-bad="sunny" data-stroller="yes">
+            <div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
+                <div class="text-center p-8">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant/40">museum</span>
+                    <p class="text-xs text-on-surface-variant mt-2">Small local museums</p>
+                </div>
+                <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Indoor</span>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg sm:text-xl font-extrabold text-on-surface leading-tight">Muzeum skla / Krkonošské muzeum</h3>
+                    <div class="flex items-center text-primary font-bold text-xs whitespace-nowrap ml-2">
+                        <span class="material-symbols-outlined mr-0.5 text-sm">schedule</span>30–60 min
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Harrachov / Jablonec</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Stroller ✅</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">🌧️ Short rain blocks</span>
+                </div>
+                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">Small museums — glassmaking, mountain history. Quick cultural stop, not a main event.</p>
+                <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Kids Guide</p>
+                    <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">Works as 30–60 min filler, not main plan. Glass demos can be interesting for the 5yo.</p>
+                </div>
+                <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="https://mapy.cz/s/nocenukama" target="_blank">
+                    <span class="material-symbols-outlined text-sm">map</span> Open in Mapy.cz
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 12: Playground + café -->
+        <div class="trail-card group bg-surface-container-lowest rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(28,28,23,0.06)] border border-outline-variant/10 flex flex-col"
+             id="card-12" data-good="sunny,rainy,cold,windy,mild" data-bad="" data-stroller="yes">
+            <div class="relative h-44 sm:h-56 overflow-hidden bg-surface-container-low flex items-center justify-center">
+                <div class="text-center p-8">
+                    <span class="material-symbols-outlined text-6xl text-outline-variant/40">local_cafe</span>
+                    <p class="text-xs text-on-surface-variant mt-2">Play + coffee</p>
+                </div>
+                <div class="absolute top-3 left-3 flex gap-1.5">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur text-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Fallback</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Anytime</span>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg sm:text-xl font-extrabold text-on-surface leading-tight">Dětské hřiště + kavárna</h3>
+                    <div class="flex items-center text-primary font-bold text-xs whitespace-nowrap ml-2">
+                        <span class="material-symbols-outlined mr-0.5 text-sm">schedule</span>1–2 h
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    <span class="bg-surface-container text-on-surface-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Liberec / Jablonec</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Stroller ✅</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-medium px-2.5 py-0.5 rounded-full">Any weather</span>
+                </div>
+                <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">Indoor play corners with coffee for parents. Low-energy fallback when everyone is tired.</p>
+                <div class="bg-surface-container-low p-4 rounded-xl mb-5 flex-1">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Kids Guide</p>
+                    <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">Smart move when everyone is tired. Both kids happy, parents get coffee. Search "dětský koutek Liberec" in Mapy.cz for options.</p>
+                </div>
+                <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="https://mapy.cz/?q=d%C4%9Btsk%C3%BD%20koutek%20Liberec" target="_blank">
+                    <span class="material-symbols-outlined text-sm">map</span> Search in Mapy.cz
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <!-- ═══════════════════ TRIPS SECTION (detail view placeholder) ═══════════════════ -->
@@ -297,7 +603,23 @@ tailwind.config = {
 
 <!-- ═══════════════════ PLANNER SECTION ═══════════════════ -->
 <div id="section-planner" class="section">
-    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mt-6 mb-5 flex items-center gap-3">
+
+    <!-- Weather Forecast -->
+    <div class="mt-6 mb-6">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-4 flex items-center gap-3">
+            Weather Forecast
+            <span class="h-px flex-1 bg-outline-variant/20"></span>
+        </h2>
+        <div id="weather-container" class="grid grid-cols-3 md:grid-cols-5 gap-3">
+            <div class="text-center py-6">
+                <span class="material-symbols-outlined text-3xl text-outline-variant/40 animate-pulse">sync</span>
+                <p class="text-xs text-on-surface-variant mt-2">Loading forecast...</p>
+            </div>
+        </div>
+        <p class="text-[10px] text-on-surface-variant mt-3 opacity-60">Forecast via Open-Meteo API · Velké Hamry (50.72°N, 15.32°E)</p>
+    </div>
+
+    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-5 flex items-center gap-3">
         Weekend Timeline
         <span class="h-px flex-1 bg-outline-variant/20"></span>
     </h2>
@@ -419,7 +741,7 @@ function switchSection(name) {
 }
 
 // ── Leaflet Map ──
-const map = L.map('leaflet-map', { zoomControl: false }).setView([50.7950, 15.3400], 12);
+const map = L.map('leaflet-map', { zoomControl: false }).setView([50.7600, 15.2400], 11);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
 }).addTo(map);
@@ -437,7 +759,15 @@ const trails = [
     { id: 'card-1', name: 'Protržená přehrada', lat: 50.7833, lng: 15.3167, color: '#783016', num: '1' },
     { id: 'card-2', name: 'Jizerka', lat: 50.8333, lng: 15.3500, color: '#384b38', num: '2' },
     { id: 'card-3', name: 'Štěpánka', lat: 50.7667, lng: 15.4000, color: '#96472b', num: '3' },
-    { id: 'card-4', name: 'Souš', lat: 50.7900, lng: 15.3300, color: '#384b38', num: '4' }
+    { id: 'card-4', name: 'Souš', lat: 50.7900, lng: 15.3300, color: '#384b38', num: '4' },
+    { id: 'card-5', name: 'iQLANDIA', lat: 50.7598, lng: 15.0555, color: '#4f634f', num: '5' },
+    { id: 'card-6', name: 'iQPARK', lat: 50.7553, lng: 15.0580, color: '#4f634f', num: '6' },
+    { id: 'card-7', name: 'Centrum Babylon', lat: 50.7553, lng: 15.0580, color: '#4f634f', num: '7' },
+    { id: 'card-8', name: 'ZOO Liberec', lat: 50.7650, lng: 15.0700, color: '#384b38', num: '8' },
+    { id: 'card-9', name: 'Harrachov', lat: 50.7700, lng: 15.4300, color: '#384b38', num: '9' },
+    { id: 'card-10', name: 'Žižkův vrch', lat: 50.7275, lng: 15.1720, color: '#384b38', num: '10' },
+    { id: 'card-11', name: 'Muzeum skla', lat: 50.7700, lng: 15.4280, color: '#4f634f', num: '11' },
+    { id: 'card-12', name: 'Hřiště + kavárna', lat: 50.7590, lng: 15.0560, color: '#4f634f', num: '12' }
 ];
 
 trails.forEach(t => {
@@ -499,6 +829,74 @@ function applyFilters() {
         }
     });
 }
+
+// ── Weather Forecast (Open-Meteo, free, no API key) ──
+async function loadWeather() {
+    try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.72&longitude=15.32&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode&timezone=Europe/Prague&forecast_days=7');
+        const data = await res.json();
+        const container = document.getElementById('weather-container');
+        const days = data.daily;
+        const dayNames = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
+
+        const wmoIcons = {
+            0: ['wb_sunny', 'Clear'],
+            1: ['wb_sunny', 'Mostly clear'],
+            2: ['cloud', 'Partly cloudy'],
+            3: ['cloud', 'Overcast'],
+            45: ['foggy', 'Fog'],
+            48: ['foggy', 'Rime fog'],
+            51: ['grain', 'Light drizzle'],
+            53: ['grain', 'Drizzle'],
+            55: ['grain', 'Heavy drizzle'],
+            61: ['rainy', 'Light rain'],
+            63: ['rainy', 'Rain'],
+            65: ['rainy', 'Heavy rain'],
+            71: ['ac_unit', 'Light snow'],
+            73: ['ac_unit', 'Snow'],
+            75: ['ac_unit', 'Heavy snow'],
+            80: ['rainy', 'Rain showers'],
+            81: ['rainy', 'Heavy showers'],
+            82: ['thunderstorm', 'Violent showers'],
+            95: ['thunderstorm', 'Thunderstorm'],
+            96: ['thunderstorm', 'Thunderstorm + hail'],
+            99: ['thunderstorm', 'Heavy T-storm']
+        };
+
+        let html = '';
+        for (let i = 0; i < Math.min(7, days.time.length); i++) {
+            const d = new Date(days.time[i]);
+            const dayName = dayNames[d.getDay()];
+            const dateStr = `${d.getDate()}.${d.getMonth() + 1}.`;
+            const code = days.weathercode[i];
+            const [icon, label] = wmoIcons[code] || ['help', 'Unknown'];
+            const hi = Math.round(days.temperature_2m_max[i]);
+            const lo = Math.round(days.temperature_2m_min[i]);
+            const rain = days.precipitation_sum[i];
+            const wind = Math.round(days.windspeed_10m_max[i]);
+            const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+
+            html += `
+            <div class="bg-surface-container-lowest rounded-2xl p-4 text-center ${isWeekend ? 'border-2 border-primary/20' : ''}">
+                <p class="text-[10px] font-bold uppercase tracking-widest ${isWeekend ? 'text-tertiary' : 'text-on-surface-variant'}">${dayName}</p>
+                <p class="text-[10px] text-on-surface-variant">${dateStr}</p>
+                <span class="material-symbols-outlined text-2xl sm:text-3xl mt-2 mb-1 ${code <= 2 ? 'text-tertiary' : code >= 61 ? 'text-primary' : 'text-on-surface-variant'}">${icon}</span>
+                <p class="text-xs text-on-surface-variant mb-2">${label}</p>
+                <p class="text-lg font-extrabold text-on-surface">${hi}°</p>
+                <p class="text-xs text-on-surface-variant">${lo}°</p>
+                <div class="mt-2 flex flex-col gap-0.5 text-[10px] text-on-surface-variant">
+                    ${rain > 0 ? `<span>💧 ${rain} mm</span>` : ''}
+                    ${wind > 30 ? `<span>💨 ${wind} km/h</span>` : ''}
+                </div>
+            </div>`;
+        }
+        container.innerHTML = html;
+        container.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3';
+    } catch (e) {
+        document.getElementById('weather-container').innerHTML = '<p class="text-sm text-on-surface-variant">Could not load forecast. Check your connection.</p>';
+    }
+}
+loadWeather();
 </script>
 </body>
 </html>
