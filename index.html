@@ -143,12 +143,7 @@ tailwind.config = {
 
 <!-- Bottom Nav -->
 <nav class="fixed bottom-0 w-full z-50 bg-[#fcf9f1]/90 backdrop-blur-2xl shadow-[0px_-12px_32px_rgba(28,28,23,0.06)] rounded-t-2xl border-t border-[#c3c8c0]/15">
-    <div class="flex justify-center pt-1.5 pb-0">
-        <button onclick="setLang('cs')" id="lang-cs" class="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 text-primary">CZ</button>
-        <span class="text-[9px] text-outline-variant">|</span>
-        <button onclick="setLang('en')" id="lang-en" class="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 text-outline-variant">EN</button>
-    </div>
-    <div class="flex justify-around items-center px-4 pb-5 pt-1">
+    <div class="flex justify-around items-center px-4 pb-5 pt-3">
         <a onclick="switchSection('map')" class="nav-item active flex flex-col items-center justify-center px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="map">
             <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">map</span>
             <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.map"></span>
@@ -666,6 +661,13 @@ function renderTips() {
         </div>`;
     }
 
+    html += `<div class="flex justify-center items-center gap-1 mt-8 pt-4 border-t border-outline-variant/15">
+        <span class="material-symbols-outlined text-xs text-outline-variant">translate</span>
+        <button onclick="setLang('cs')" id="lang-cs" class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded ${currentLang === 'cs' ? 'text-primary' : 'text-outline-variant'}">Čeština</button>
+        <span class="text-[10px] text-outline-variant">·</span>
+        <button onclick="setLang('en')" id="lang-en" class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded ${currentLang === 'en' ? 'text-primary' : 'text-outline-variant'}">English</button>
+    </div>`;
+
     document.getElementById('tips-root').innerHTML = html;
 }
 
@@ -685,8 +687,6 @@ function renderAll() {
 
 function setLang(lang) {
     currentLang = lang;
-    document.getElementById('lang-cs').className = `text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 ${lang === 'cs' ? 'text-primary' : 'text-outline-variant'}`;
-    document.getElementById('lang-en').className = `text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 ${lang === 'en' ? 'text-primary' : 'text-outline-variant'}`;
     document.documentElement.lang = lang;
     renderAll();
 }
