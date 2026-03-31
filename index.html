@@ -66,7 +66,7 @@ tailwind.config = {
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .trail-card { transition: opacity 0.3s ease, transform 0.3s ease; }
-    .trail-card.dimmed { opacity: 0.25; transform: scale(0.98); }
+    .trail-card.hidden-by-filter { display: none; }
     .trail-card.highlighted { box-shadow: 0 0 0 3px #384b38; }
     .detail-section { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; opacity: 0; }
     .detail-section.open { max-height: 600px; opacity: 1; }
@@ -551,14 +551,16 @@ L.marker([50.7167, 15.3167], {
     icon: makeIcon('<div style="background:#384b38;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🏠</div>')
 }).addTo(map).bindPopup('<strong>Velké Hamry</strong>');
 
+const markers = {};
 CARDS.forEach(c => {
     const icon = makeIcon(`<div style="background:${c.color};color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${c.id > 9 ? '11' : '14'}px;font-weight:800;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);font-family:'Plus Jakarta Sans',sans-serif;">${c.id}</div>`);
-    L.marker([c.lat, c.lng], { icon }).addTo(map)
+    const marker = L.marker([c.lat, c.lng], { icon }).addTo(map)
         .bindPopup(`<strong>${c.cs.name}</strong>`)
         .on('click', () => {
             const card = document.getElementById('card-' + c.id);
             if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); card.classList.add('highlighted'); setTimeout(() => card.classList.remove('highlighted'), 2000); }
         });
+    markers[c.id] = marker;
 });
 
 // ═══════════════════════════════════════════════════
@@ -582,7 +584,11 @@ function toggleFilter(el) {
 
 function applyFilters() {
     const cards = document.querySelectorAll('.trail-card');
-    if (activeFilters.size === 0) { cards.forEach(c => c.classList.remove('dimmed')); return; }
+    if (activeFilters.size === 0) {
+        cards.forEach(c => c.classList.remove('hidden-by-filter'));
+        CARDS.forEach(c => { if (markers[c.id] && !map.hasLayer(markers[c.id])) markers[c.id].addTo(map); });
+        return;
+    }
     cards.forEach(card => {
         const good = (card.dataset.good || '').split(',');
         const bad = (card.dataset.bad || '').split(',');
@@ -593,7 +599,14 @@ function applyFilters() {
             else if (good.includes(f)) score += 2;
             else if (bad.includes(f)) penalty = true;
         });
-        card.classList.toggle('dimmed', penalty && score === 0);
+        const shouldHide = penalty && score === 0;
+        card.classList.toggle('hidden-by-filter', shouldHide);
+        // Sync map marker
+        const id = parseInt(card.id.replace('card-', ''));
+        if (markers[id]) {
+            if (shouldHide) map.removeLayer(markers[id]);
+            else if (!map.hasLayer(markers[id])) markers[id].addTo(map);
+        }
     });
 }
 
