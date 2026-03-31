@@ -126,25 +126,12 @@ tailwind.config = {
 
 <!-- ═══ PLANNER SECTION ═══ -->
 <div id="section-planner" class="section">
-    <div class="mt-6 mb-6">
-        <h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-4 flex items-center gap-3">
-            <span data-i18n="planner.weather"></span>
-            <span class="h-px flex-1 bg-outline-variant/20"></span>
-        </h2>
-        <div id="weather-container" class="grid grid-cols-3 md:grid-cols-5 gap-3">
-            <div class="text-center py-6">
-                <span class="material-symbols-outlined text-3xl text-outline-variant/40 animate-pulse">sync</span>
-                <p class="text-xs text-on-surface-variant mt-2" data-i18n="planner.loading"></p>
-            </div>
-        </div>
-        <p class="text-[10px] text-on-surface-variant mt-3 opacity-60">Open-Meteo API · Velké Hamry (50.72°N, 15.32°E)</p>
-    </div>
-
-    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-5 flex items-center gap-3">
+    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mt-6 mb-5 flex items-center gap-3">
         <span data-i18n="planner.timeline"></span>
         <span class="h-px flex-1 bg-outline-variant/20"></span>
     </h2>
-    <div id="planner-days" class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5"></div>
+    <div id="planner-days"></div>
+    <p class="text-[10px] text-on-surface-variant mt-4 opacity-50 text-center">Open-Meteo API · Velké Hamry</p>
 </div>
 
 <!-- ═══ TIPS SECTION ═══ -->
@@ -434,12 +421,30 @@ function renderCard(c) {
                 <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">${t('kids')}</p>
                 <p class="text-xs sm:text-sm leading-relaxed text-on-surface-variant">${d.kids}</p>
             </div>
+            <!-- Thumbs -->
+            <div class="flex items-center gap-2 mb-4">
+                <button onclick="setRating(${c.id}, 1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === 1 ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
+                    <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === 1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_up</span>
+                </button>
+                <button onclick="setRating(${c.id}, -1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === -1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
+                    <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === -1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_down</span>
+                </button>
+            </div>
             ${d.details ? `<button onclick="toggleDetails(${c.id})" id="toggle-${c.id}" class="detail-toggle w-full flex items-center justify-center gap-1.5 py-2.5 mb-3 text-xs font-bold text-primary hover:text-primary-container transition-colors active:scale-[0.98]">
                 <span class="label">${t('btn.more')}</span>
                 <span class="material-symbols-outlined text-sm chevron">expand_more</span>
             </button>
             <div id="details-${c.id}" class="detail-section mb-4">
                 <div class="bg-surface-container-low rounded-xl p-4 space-y-3">
+                    ${c.gmaps ? `<div class="flex items-start gap-2.5">
+                        <span class="material-symbols-outlined text-sm text-tertiary mt-0.5">star</span>
+                        <div><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">Google Maps</p>
+                        <a href="${c.gmaps.url}" target="_blank" class="text-xs text-primary hover:text-primary-container flex items-center gap-1">
+                            <span class="font-bold text-tertiary">${c.gmaps.rating}</span><span class="text-tertiary text-[10px]">★</span>
+                            <span class="text-on-surface-variant">(${c.gmaps.reviews})</span>
+                            <span class="material-symbols-outlined text-xs">open_in_new</span>
+                        </a></div>
+                    </div>` : ''}
                     ${renderDetailRow('schedule', t('detail.hours'), d.details.hours)}
                     ${renderDetailRow('local_parking', t('detail.parking'), d.details.parking)}
                     ${renderDetailRow('payments', t('detail.fee'), d.details.fee)}
@@ -452,27 +457,21 @@ function renderCard(c) {
                         <div><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">${t('detail.web')}</p>
                         <a href="https://${d.details.web}" target="_blank" class="text-xs text-primary underline underline-offset-2 hover:text-primary-container">${d.details.web}</a></div>
                     </div>` : ''}
+                    <!-- Day assignment inside details -->
+                    <div class="flex items-center gap-2.5 pt-2 border-t border-outline-variant/15">
+                        <span class="material-symbols-outlined text-sm text-primary mt-0.5">event</span>
+                        <div class="flex-1"><p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">${t('assign')}</p>
+                        <select onchange="assignDay(${c.id}, this.value)" class="text-xs font-bold bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border-0 appearance-none cursor-pointer w-full" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;">
+                            <option value="" ${!getUserData().days[c.id] ? 'selected' : ''}>${t('assign.none')}</option>
+                            <option value="thu" ${getUserData().days[c.id]==='thu' ? 'selected' : ''}>${t('assign.thu')}</option>
+                            <option value="fri" ${getUserData().days[c.id]==='fri' ? 'selected' : ''}>${t('assign.fri')}</option>
+                            <option value="sat" ${getUserData().days[c.id]==='sat' ? 'selected' : ''}>${t('assign.sat')}</option>
+                            <option value="sun" ${getUserData().days[c.id]==='sun' ? 'selected' : ''}>${t('assign.sun')}</option>
+                            <option value="mon" ${getUserData().days[c.id]==='mon' ? 'selected' : ''}>${t('assign.mon')}</option>
+                        </select></div>
+                    </div>
                 </div>
             </div>` : ''}
-            <!-- Thumbs + Day assign -->
-            <div class="flex items-center justify-between mb-4 gap-3">
-                <div class="flex items-center gap-2">
-                    <button onclick="setRating(${c.id}, 1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === 1 ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
-                        <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === 1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_up</span>
-                    </button>
-                    <button onclick="setRating(${c.id}, -1)" class="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-110 ${getUserData().ratings[c.id] === -1 ? 'bg-tertiary text-on-tertiary' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}">
-                        <span class="material-symbols-outlined text-base" ${getUserData().ratings[c.id] === -1 ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>thumb_down</span>
-                    </button>
-                </div>
-                <select onchange="assignDay(${c.id}, this.value)" class="text-xs font-bold bg-surface-container-high text-on-surface-variant px-3 py-1.5 rounded-full border-0 appearance-none cursor-pointer" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22><path fill=%22%23434842%22 d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;">
-                    <option value="" ${!getUserData().days[c.id] ? 'selected' : ''}>${t('assign.none')}</option>
-                    <option value="thu" ${getUserData().days[c.id]==='thu' ? 'selected' : ''}>${t('assign.thu')}</option>
-                    <option value="fri" ${getUserData().days[c.id]==='fri' ? 'selected' : ''}>${t('assign.fri')}</option>
-                    <option value="sat" ${getUserData().days[c.id]==='sat' ? 'selected' : ''}>${t('assign.sat')}</option>
-                    <option value="sun" ${getUserData().days[c.id]==='sun' ? 'selected' : ''}>${t('assign.sun')}</option>
-                    <option value="mon" ${getUserData().days[c.id]==='mon' ? 'selected' : ''}>${t('assign.mon')}</option>
-                </select>
-            </div>
             <a class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]" href="${c.link}" target="_blank">
                 <span class="material-symbols-outlined text-sm">map</span> ${c.isSearch ? t('btn.search') : t('btn.mapy')}
             </a>
@@ -550,44 +549,41 @@ function renderPlanner() {
         if (card && cardsByDay[day]) cardsByDay[day].push(card);
     });
 
-    const hasAny = Object.values(cardsByDay).some(arr => arr.length > 0);
-
-    let html = '';
-    if (!hasAny) {
-        html = `<div class="text-center py-8">
-            <span class="material-symbols-outlined text-4xl text-outline-variant/30 mb-3">event_note</span>
-            <p class="text-sm text-on-surface-variant">${t('planner.empty')}</p>
+    let html = dayKeys.map(day => {
+        const cards = cardsByDay[day];
+        const w = getWeatherForDayKey(day);
+        return `<div class="bg-surface-container-low p-5 sm:p-6 rounded-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-3 opacity-10">
+                <span class="text-3xl font-black">${dayCodes[day]}</span>
+            </div>
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-[9px] font-extrabold uppercase tracking-widest text-tertiary">${t('day.' + day)}</p>
+                ${w ? `<div class="flex items-center gap-1.5 bg-surface-container-lowest px-2.5 py-1 rounded-lg">
+                    <span class="material-symbols-outlined text-base ${w.code<=2?'text-tertiary':w.code>=61?'text-primary':'text-on-surface-variant'}">${w.icon}</span>
+                    <span class="text-xs font-bold text-on-surface">${w.hi}°</span>
+                    <span class="text-[10px] text-on-surface-variant">${w.lo}°</span>
+                    ${w.rain > 0 ? `<span class="text-[10px] text-on-surface-variant">💧${w.rain}</span>` : ''}
+                </div>` : ''}
+            </div>
+            ${cards.length === 0
+                ? `<p class="text-xs text-on-surface-variant opacity-50 italic">—</p>`
+                : cards.map(c => {
+                    const d = c[currentLang];
+                    const rating = ud.ratings[c.id] || 0;
+                    return `<div class="flex items-center gap-3 mb-2 last:mb-0">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold text-on-primary flex-shrink-0" style="background:${c.color};">${c.id}</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold text-on-surface truncate">${d.name}</p>
+                            <p class="text-[10px] text-on-surface-variant">${d.dist} · ${d.loc}</p>
+                        </div>
+                        ${rating === 1 ? `<span class="material-symbols-outlined text-sm text-primary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_up</span>` : rating === -1 ? `<span class="material-symbols-outlined text-sm text-tertiary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_down</span>` : ''}
+                    </div>`;
+                }).join('')}
         </div>`;
-    } else {
-        html = dayKeys.map(day => {
-            const cards = cardsByDay[day];
-            return `<div class="bg-surface-container-low p-5 sm:p-6 rounded-2xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-3 opacity-10">
-                    <span class="text-3xl font-black">${dayCodes[day]}</span>
-                </div>
-                <p class="text-[9px] font-extrabold uppercase tracking-widest text-tertiary mb-3">${t('day.' + day)}</p>
-                ${cards.length === 0
-                    ? `<p class="text-xs text-on-surface-variant opacity-50 italic">—</p>`
-                    : cards.map(c => {
-                        const d = c[currentLang];
-                        const rating = ud.ratings[c.id] || 0;
-                        return `<div class="flex items-center gap-3 mb-2 last:mb-0">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold text-on-primary flex-shrink-0" style="background:${c.color};">${c.id}</div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-bold text-on-surface truncate">${d.name}</p>
-                                <p class="text-[10px] text-on-surface-variant">${d.dist} · ${d.loc}</p>
-                            </div>
-                            ${rating === 1 ? `<span class="material-symbols-outlined text-sm text-primary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_up</span>` : rating === -1 ? `<span class="material-symbols-outlined text-sm text-tertiary flex-shrink-0" style="font-variation-settings: 'FILL' 1;">thumb_down</span>` : ''}
-                        </div>`;
-                    }).join('')}
-            </div>`;
-        }).join('');
-    }
+    }).join('');
 
     document.getElementById('planner-days').innerHTML = html;
-    document.getElementById('planner-days').className = hasAny
-        ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5'
-        : '';
+    document.getElementById('planner-days').className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5';
 }
 
 function renderTips() {
@@ -767,43 +763,56 @@ document.addEventListener('touchend', e => {
 // ═══════════════════════════════════════════════════
 // WEATHER
 // ═══════════════════════════════════════════════════
+const WMO = { 0:['wb_sunny','Jasno','Clear'],1:['wb_sunny','Skoro jasno','Mostly clear'],2:['cloud','Polojasno','Partly cloudy'],3:['cloud','Zataženo','Overcast'],45:['foggy','Mlha','Fog'],48:['foggy','Námraza','Rime fog'],51:['grain','Mrholení','Drizzle'],53:['grain','Mrholení','Drizzle'],55:['grain','Mrholení','Heavy drizzle'],61:['rainy','Slabý déšť','Light rain'],63:['rainy','Déšť','Rain'],65:['rainy','Silný déšť','Heavy rain'],71:['ac_unit','Sníh','Snow'],73:['ac_unit','Sníh','Snow'],75:['ac_unit','Husté sněžení','Heavy snow'],80:['rainy','Přeháňky','Showers'],81:['rainy','Silné přeháňky','Heavy showers'],82:['thunderstorm','Lijáky','Violent showers'],95:['thunderstorm','Bouřka','Thunderstorm'],96:['thunderstorm','Bouřka','T-storm + hail'],99:['thunderstorm','Silná bouřka','Heavy T-storm'] };
+let weatherByDate = {}; // keyed by YYYY-MM-DD
+
 async function loadWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.72&longitude=15.32&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode&timezone=Europe/Prague&forecast_days=7');
         const data = await res.json();
-        const container = document.getElementById('weather-container');
         const days = data.daily;
-        const dayNames = currentLang === 'cs' ? ['Ne','Po','Út','St','Čt','Pá','So'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        const wmo = { 0:['wb_sunny','Jasno','Clear'],1:['wb_sunny','Skoro jasno','Mostly clear'],2:['cloud','Polojasno','Partly cloudy'],3:['cloud','Zataženo','Overcast'],45:['foggy','Mlha','Fog'],48:['foggy','Námraza','Rime fog'],51:['grain','Mrholení','Drizzle'],53:['grain','Mrholení','Drizzle'],55:['grain','Mrholení','Heavy drizzle'],61:['rainy','Slabý déšť','Light rain'],63:['rainy','Déšť','Rain'],65:['rainy','Silný déšť','Heavy rain'],71:['ac_unit','Sníh','Snow'],73:['ac_unit','Sníh','Snow'],75:['ac_unit','Husté sněžení','Heavy snow'],80:['rainy','Přeháňky','Showers'],81:['rainy','Silné přeháňky','Heavy showers'],82:['thunderstorm','Lijáky','Violent showers'],95:['thunderstorm','Bouřka','Thunderstorm'],96:['thunderstorm','Bouřka','T-storm + hail'],99:['thunderstorm','Silná bouřka','Heavy T-storm'] };
-        let html = '';
-        for (let i = 0; i < Math.min(7, days.time.length); i++) {
-            const d = new Date(days.time[i]);
-            const dn = dayNames[d.getDay()];
-            const ds = `${d.getDate()}.${d.getMonth()+1}.`;
+        for (let i = 0; i < days.time.length; i++) {
             const code = days.weathercode[i];
-            const [icon, csLabel, enLabel] = wmo[code] || ['help','?','?'];
-            const label = currentLang === 'cs' ? csLabel : enLabel;
-            const hi = Math.round(days.temperature_2m_max[i]), lo = Math.round(days.temperature_2m_min[i]);
-            const rain = days.precipitation_sum[i], wind = Math.round(days.windspeed_10m_max[i]);
-            const isWe = d.getDay() === 0 || d.getDay() === 6;
-            html += `<div class="bg-surface-container-lowest rounded-2xl p-4 text-center ${isWe ? 'border-2 border-primary/20' : ''}">
-                <p class="text-[10px] font-bold uppercase tracking-widest ${isWe ? 'text-tertiary' : 'text-on-surface-variant'}">${dn}</p>
-                <p class="text-[10px] text-on-surface-variant">${ds}</p>
-                <span class="material-symbols-outlined text-2xl sm:text-3xl mt-2 mb-1 ${code<=2?'text-tertiary':code>=61?'text-primary':'text-on-surface-variant'}">${icon}</span>
-                <p class="text-xs text-on-surface-variant mb-2">${label}</p>
-                <p class="text-lg font-extrabold text-on-surface">${hi}°</p>
-                <p class="text-xs text-on-surface-variant">${lo}°</p>
-                <div class="mt-2 flex flex-col gap-0.5 text-[10px] text-on-surface-variant">
-                    ${rain > 0 ? `<span>💧 ${rain} mm</span>` : ''}
-                    ${wind > 30 ? `<span>💨 ${wind} km/h</span>` : ''}
-                </div>
-            </div>`;
+            const [icon, csLabel, enLabel] = WMO[code] || ['help','?','?'];
+            weatherByDate[days.time[i]] = {
+                icon, csLabel, enLabel,
+                hi: Math.round(days.temperature_2m_max[i]),
+                lo: Math.round(days.temperature_2m_min[i]),
+                rain: days.precipitation_sum[i],
+                wind: Math.round(days.windspeed_10m_max[i]),
+                code
+            };
         }
-        container.innerHTML = html;
-        container.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3';
-    } catch (e) {
-        document.getElementById('weather-container').innerHTML = `<p class="text-sm text-on-surface-variant">${currentLang === 'cs' ? 'Nepodařilo se načíst předpověď.' : 'Could not load forecast.'}</p>`;
+        renderPlanner(); // re-render with weather data
+    } catch (e) { /* weather will just not show */ }
+}
+
+function getWeatherForDayKey(dayKey) {
+    // Map day keys to upcoming dates
+    const now = new Date();
+    const dayMap = { 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6, 'sun': 0 };
+    const target = dayMap[dayKey];
+    if (target === undefined) return null;
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(now); d.setDate(now.getDate() + i);
+        if (d.getDay() === target) {
+            const key = d.toISOString().split('T')[0];
+            return weatherByDate[key] || null;
+        }
     }
+    return null;
+}
+
+function renderWeatherBadge(w) {
+    if (!w) return '';
+    const label = currentLang === 'cs' ? w.csLabel : w.enLabel;
+    return `<div class="flex items-center gap-2 px-3 py-2 bg-surface-container-lowest rounded-xl">
+        <span class="material-symbols-outlined text-xl ${w.code<=2?'text-tertiary':w.code>=61?'text-primary':'text-on-surface-variant'}">${w.icon}</span>
+        <div class="text-left">
+            <p class="text-xs font-bold text-on-surface">${w.hi}°/${w.lo}°</p>
+            <p class="text-[10px] text-on-surface-variant">${label}${w.rain > 0 ? ` · 💧${w.rain}mm` : ''}${w.wind > 30 ? ` · 💨${w.wind}km/h` : ''}</p>
+        </div>
+    </div>`;
 }
 
 // ═══════════════════════════════════════════════════
