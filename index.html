@@ -115,15 +115,6 @@ tailwind.config = {
     <div id="cards-root"></div>
 </div>
 
-<!-- ═══ TRIPS SECTION ═══ -->
-<div id="section-trips" class="section">
-    <div class="py-8 text-center">
-        <span class="material-symbols-outlined text-5xl text-outline-variant/30 mb-4">explore</span>
-        <h2 class="text-xl font-extrabold text-primary mb-2" data-i18n="trips.title"></h2>
-        <p class="text-sm text-on-surface-variant" data-i18n="trips.subtitle"></p>
-    </div>
-</div>
-
 <!-- ═══ PLANNER SECTION ═══ -->
 <div id="section-planner" class="section">
     <h2 class="text-xl sm:text-2xl font-extrabold text-primary mt-6 mb-5 flex items-center gap-3">
@@ -132,6 +123,11 @@ tailwind.config = {
     </h2>
     <div id="planner-days"></div>
     <p class="text-[10px] text-on-surface-variant mt-4 opacity-50 text-center">Open-Meteo API · Velké Hamry</p>
+</div>
+
+<!-- ═══ PREP SECTION ═══ -->
+<div id="section-prep" class="section">
+    <div class="mt-6 mb-6" id="prep-root"></div>
 </div>
 
 <!-- ═══ TIPS SECTION ═══ -->
@@ -148,13 +144,13 @@ tailwind.config = {
             <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">map</span>
             <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.map"></span>
         </a>
-        <a onclick="switchSection('trips')" class="nav-item flex flex-col items-center justify-center text-stone-500 px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="trips">
-            <span class="material-symbols-outlined text-xl">explore</span>
-            <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.trips"></span>
-        </a>
         <a onclick="switchSection('planner')" class="nav-item flex flex-col items-center justify-center text-stone-500 px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="planner">
             <span class="material-symbols-outlined text-xl">calendar_today</span>
             <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.planner"></span>
+        </a>
+        <a onclick="switchSection('prep')" class="nav-item flex flex-col items-center justify-center text-stone-500 px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="prep">
+            <span class="material-symbols-outlined text-xl">checklist</span>
+            <span class="font-label font-medium text-[9px] uppercase tracking-widest mt-0.5" data-i18n="nav.prep"></span>
         </a>
         <a onclick="switchSection('tips')" class="nav-item flex flex-col items-center justify-center text-stone-500 px-4 py-1.5 cursor-pointer active:scale-90 transition-all" data-section="tips">
             <span class="material-symbols-outlined text-xl">lightbulb</span>
@@ -172,8 +168,7 @@ let currentLang = 'cs';
 const T = {
     cs: {
         'header.subtitle': 'Rodinný plánovač výletů · Jizerské hory · Ruben (4) & Cyril (1)',
-        'nav.map': 'Mapa', 'nav.trips': 'Výlety', 'nav.planner': 'Plán', 'nav.tips': 'Tipy',
-        'trips.title': 'Všechny výlety', 'trips.subtitle': 'Podrobnosti brzy — zatím použij záložku Mapa.',
+        'nav.map': 'Mapa', 'nav.planner': 'Plán', 'nav.prep': 'Příprava', 'nav.tips': 'Tipy',
         'planner.weather': 'Předpověď počasí', 'planner.loading': 'Načítám předpověď...', 'planner.timeline': 'Víkendový plán',
         'cat.recommended': 'Doporučené výlety', 'cat.indoor': 'Liberec — vnitřní', 'cat.daytrips': 'Jednodenní výlety a zastávky', 'cat.unique': 'Zážitky a dobrodružství', 'cat.relax': 'Odpočinek a voda',
         'filter.sunny': 'Slunečno', 'filter.cold': 'Zima', 'filter.rainy': 'Déšť', 'filter.windy': 'Vítr', 'filter.mild': 'Oblačno', 'filter.stroller': 'Kočárek',
@@ -187,14 +182,17 @@ const T = {
         'detail.hours': 'Otevírací doba', 'detail.parking': 'Parkování', 'detail.fee': 'Vstupné',
         'detail.time': 'Délka návštěvy', 'detail.food': 'Jídlo', 'detail.warnings': 'Pozor',
         'detail.bestTime': 'Nejlepší čas', 'detail.web': 'Web',
+        'meal.breakfast': 'Snídaně', 'meal.snack': 'Svačina', 'meal.lunch': 'Oběd/večeře',
+        'meal.home': 'Doma', 'meal.out': 'Venku',
+        'prep.title': 'Příprava na výlet', 'prep.packing': 'Co sbalit', 'prep.shopping': 'Nákupní seznam',
+        'prep.packed': 'Sbaleno',
         'tips.title': 'Tipy od profíků',
         'tips.safety': 'Bezpečnost', 'tips.packing': 'Balení', 'tips.local': 'Místní tipy',
         'day.thu': 'Čtvrtek', 'day.fri': 'Pátek', 'day.sat': 'Sobota', 'day.sun': 'Neděle', 'day.mon': 'Pondělí',
     },
     en: {
         'header.subtitle': 'Weekend trip planner · Jizerské hory · Ruben (4) & Cyril (1)',
-        'nav.map': 'Map', 'nav.trips': 'Trips', 'nav.planner': 'Planner', 'nav.tips': 'Tips',
-        'trips.title': 'All Trips', 'trips.subtitle': 'Detailed trail info coming soon — use the Map tab for now.',
+        'nav.map': 'Map', 'nav.planner': 'Planner', 'nav.prep': 'Prep', 'nav.tips': 'Tips',
         'planner.weather': 'Weather Forecast', 'planner.loading': 'Loading forecast...', 'planner.timeline': 'Weekend Timeline',
         'cat.recommended': 'Recommended Trips', 'cat.indoor': 'Liberec Indoor', 'cat.daytrips': 'Day Trips & Quick Stops', 'cat.unique': 'Adventures & Experiences', 'cat.relax': 'Relaxation & Water',
         'filter.sunny': 'Sunny', 'filter.cold': 'Cold', 'filter.rainy': 'Rainy', 'filter.windy': 'Windy', 'filter.mild': 'Mild', 'filter.stroller': 'Stroller',
@@ -208,6 +206,10 @@ const T = {
         'detail.hours': 'Hours', 'detail.parking': 'Parking', 'detail.fee': 'Entry fee',
         'detail.time': 'Time needed', 'detail.food': 'Food', 'detail.warnings': 'Heads up',
         'detail.bestTime': 'Best time', 'detail.web': 'Website',
+        'meal.breakfast': 'Breakfast', 'meal.snack': 'Trail snack', 'meal.lunch': 'Lunch/dinner',
+        'meal.home': 'At home', 'meal.out': 'Eating out',
+        'prep.title': 'Trip Preparation', 'prep.packing': 'Packing List', 'prep.shopping': 'Shopping List',
+        'prep.packed': 'Packed',
         'tips.title': 'Expert Family Tips',
         'tips.safety': 'Safety', 'tips.packing': 'Packing', 'tips.local': 'Local Knowledge',
         'day.thu': 'Thursday', 'day.fri': 'Friday', 'day.sat': 'Saturday', 'day.sun': 'Sunday', 'day.mon': 'Monday',
@@ -723,6 +725,59 @@ function renderCards() {
     document.getElementById('cards-root').innerHTML = html;
 }
 
+// Meal suggestions based on day plan
+const BREAKFASTS = {
+    cs: ['Ovesná kaše s ovocem', 'Vejce s chlebem a šunkou', 'Palačinky'],
+    en: ['Oatmeal with fruit', 'Eggs with bread & ham', 'Pancakes']
+};
+const SNACKS = {
+    cs: ['Chleba se šunkou, ovoce, ořechy, tyčinky'],
+    en: ['Bread & ham, fruit, nuts, bars']
+};
+
+function getMealSuggestion(day, cards) {
+    const isOutdoor = cards.some(c => ['recommended','daytrips','unique'].includes(c.category));
+    const isLiberec = cards.some(c => c[currentLang].loc.includes('Liberec'));
+    const hasRestaurant = cards.some(c => c[currentLang].details && c[currentLang].details.food && !c[currentLang].details.food.includes('nic') && !c[currentLang].details.food.includes('Nothing'));
+
+    const bIdx = ['thu','fri','sat','sun','mon'].indexOf(day) % BREAKFASTS.cs.length;
+    const breakfast = currentLang === 'cs' ? BREAKFASTS.cs[bIdx] : BREAKFASTS.en[bIdx];
+    const snack = currentLang === 'cs' ? SNACKS.cs[0] : SNACKS.en[0];
+
+    let lunch;
+    if (cards.length === 0) {
+        lunch = currentLang === 'cs' ? '🍳 Vaříme doma — těstoviny, kuře, salát' : '🍳 Cook at home — pasta, chicken, salad';
+    } else if (isLiberec) {
+        lunch = currentLang === 'cs' ? '🍽️ Oběd v Liberci (restaurace)' : '🍽️ Lunch in Liberec (restaurant)';
+    } else if (hasRestaurant) {
+        const rest = cards.find(c => c[currentLang].details && c[currentLang].details.food && !c[currentLang].details.food.includes('nic'));
+        lunch = currentLang === 'cs' ? `🍽️ ${rest[currentLang].details.food.split('.')[0]}` : `🍽️ ${rest[currentLang].details.food.split('.')[0]}`;
+    } else if (isOutdoor) {
+        lunch = currentLang === 'cs' ? '🍳 Vaříme doma po výletě' : '🍳 Cook at home after the trip';
+    } else {
+        lunch = currentLang === 'cs' ? '🍳 Vaříme doma' : '🍳 Cook at home';
+    }
+    return { breakfast, snack: isOutdoor || cards.length > 0 ? snack : null, lunch };
+}
+
+function renderMealPlan(day, cards) {
+    const m = getMealSuggestion(day, cards);
+    return `<div class="mt-3 pt-3 border-t border-outline-variant/15 space-y-1">
+        <div class="flex items-center gap-2">
+            <span class="text-[10px]">☀️</span>
+            <span class="text-[10px] text-on-surface-variant">${t('meal.breakfast')}: <span class="text-on-surface font-medium">${m.breakfast}</span></span>
+        </div>
+        ${m.snack ? `<div class="flex items-center gap-2">
+            <span class="text-[10px]">🎒</span>
+            <span class="text-[10px] text-on-surface-variant">${t('meal.snack')}: <span class="text-on-surface font-medium">${m.snack}</span></span>
+        </div>` : ''}
+        <div class="flex items-center gap-2">
+            <span class="text-[10px]">🍽️</span>
+            <span class="text-[10px] text-on-surface-variant">${t('meal.lunch')}: <span class="text-on-surface font-medium">${m.lunch}</span></span>
+        </div>
+    </div>`;
+}
+
 function renderPlanner() {
     const dayKeys = ['thu', 'fri', 'sat', 'sun', 'mon'];
     const dayCodes = { thu: 'THU', fri: 'FRI', sat: 'SAT', sun: 'SUN', mon: 'MON' };
@@ -763,6 +818,7 @@ function renderPlanner() {
                 <span class="text-[10px] text-on-surface-variant">${currentLang === 'cs' ? w.csLabel : w.enLabel}</span>
                 ${w.rain > 0 ? `<span class="text-[10px] text-on-surface-variant">· 💧${w.rain}mm</span>` : ''}
             </div>` : ''}
+            ${renderMealPlan(day, cards)}
         </div>`;
     }).join('');
 
@@ -862,11 +918,85 @@ function applyI18n() {
     });
 }
 
+function renderPrep() {
+    const ud = ensureUserData();
+    const packingItems = [
+        { icon: 'backpack', cs: 'Nosítko / krosna (Cyril)', en: 'Baby carrier (Cyril)' },
+        { icon: 'stroller', cs: 'Kočárek (pro zpevněné cesty)', en: 'Stroller (for paved trails)' },
+        { icon: 'pedal_bike', cs: 'Odrážedlo pro Rubena', en: 'Balance bike for Ruben' },
+        { icon: 'checkroom', cs: 'Větrovky + fleece (celá rodina)', en: 'Windbreakers + fleece (whole family)' },
+        { icon: 'water_drop', cs: 'Pláštěnky / nepromokavé bundy', en: 'Rain jackets' },
+        { icon: 'sunny', cs: 'Opalovací krém + klobouky', en: 'Sunscreen + hats' },
+        { icon: 'bug_report', cs: 'Pinzeta na klíšťata + repelent', en: 'Tick remover + repellent' },
+        { icon: 'medical_services', cs: 'Mini lékárnička (náplasti, Fenistil)', en: 'Mini first-aid kit (plasters, antihistamine)' },
+        { icon: 'map', cs: 'Mapy.cz offline stažené', en: 'Mapy.cz downloaded offline' },
+        { icon: 'battery_charging_full', cs: 'Powerbanka + nabíječka', en: 'Powerbank + charger' },
+        { icon: 'pool', cs: 'Plavky + plavací pleny (Cyril)', en: 'Swimsuits + swim diapers (Cyril)' },
+        { icon: 'child_care', cs: 'Přebalovací podložka + pleny', en: 'Changing mat + diapers' },
+        { icon: 'toys', cs: 'Hračky na cestu (autíčka, knížky)', en: 'Travel toys (cars, books)' },
+    ];
+
+    const shoppingItems = [
+        { cat: 'cs' === currentLang ? 'Snídaně' : 'Breakfast', items: currentLang === 'cs'
+            ? ['Ovesné vločky', 'Mléko / rostlinné mléko', 'Ovoce (banány, jablka, borůvky)', 'Vejce', 'Chléb', 'Šunka / sýr', 'Máslo', 'Palačinkové těsto / mouka']
+            : ['Oats', 'Milk / plant milk', 'Fruit (bananas, apples, blueberries)', 'Eggs', 'Bread', 'Ham / cheese', 'Butter', 'Pancake mix / flour'] },
+        { cat: currentLang === 'cs' ? 'Svačiny na výlet' : 'Trail snacks', items: currentLang === 'cs'
+            ? ['Chléb na svačiny', 'Šunka / salám', 'Ořechy (mandle, kešu)', 'Müsli tyčinky', 'Ovoce na cestu', 'Voda (min 2L/den)']
+            : ['Bread for sandwiches', 'Ham / salami', 'Nuts (almonds, cashews)', 'Granola bars', 'Fruit for the trail', 'Water (min 2L/day)'] },
+        { cat: currentLang === 'cs' ? 'Večeře / obědy doma' : 'Dinner / home lunches', items: currentLang === 'cs'
+            ? ['Těstoviny + rajčatová omáčka', 'Kuřecí stehna / prsa', 'Rýže', 'Salátové ingredience', 'Zelenina na přílohu', 'Olivový olej, sůl, pepř']
+            : ['Pasta + tomato sauce', 'Chicken thighs / breasts', 'Rice', 'Salad ingredients', 'Vegetables for side dishes', 'Olive oil, salt, pepper'] },
+    ];
+
+    if (!ud.packing) { ud.packing = {}; saveUserData(ud); }
+
+    let html = `<h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-5 flex items-center gap-3">
+        ${t('prep.packing')}<span class="h-px flex-1 bg-outline-variant/20"></span>
+        <span class="text-xs font-medium text-on-surface-variant">${Object.values(ud.packing).filter(Boolean).length}/${packingItems.length}</span>
+    </h2>
+    <div class="space-y-2 mb-8">
+        ${packingItems.map((item, i) => `
+            <label class="flex items-center gap-3 bg-surface-container-lowest rounded-xl p-3 cursor-pointer active:scale-[0.99] transition-transform ${ud.packing[i] ? 'opacity-50' : ''}">
+                <input type="checkbox" ${ud.packing[i] ? 'checked' : ''} onchange="togglePacking(${i})" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary accent-primary">
+                <span class="material-symbols-outlined text-base text-primary">${item.icon}</span>
+                <span class="text-sm ${ud.packing[i] ? 'line-through text-on-surface-variant' : 'text-on-surface'}">${currentLang === 'cs' ? item.cs : item.en}</span>
+            </label>
+        `).join('')}
+    </div>
+
+    <h2 class="text-xl sm:text-2xl font-extrabold text-primary mb-5 flex items-center gap-3">
+        ${t('prep.shopping')}<span class="h-px flex-1 bg-outline-variant/20"></span>
+    </h2>
+    ${shoppingItems.map(cat => `
+        <div class="mb-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-widest text-tertiary mb-2">${cat.cat}</p>
+            <div class="bg-surface-container-lowest rounded-xl p-4">
+                <ul class="space-y-1.5">
+                    ${cat.items.map(item => `<li class="text-sm text-on-surface flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary/40 flex-shrink-0"></span>${item}
+                    </li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    `).join('')}`;
+
+    document.getElementById('prep-root').innerHTML = html;
+}
+
+function togglePacking(idx) {
+    const ud = ensureUserData();
+    if (!ud.packing) ud.packing = {};
+    ud.packing[idx] = !ud.packing[idx];
+    saveUserData(ud);
+    renderPrep();
+}
+
 function renderAll() {
     applyI18n();
     renderFilters();
     renderCards();
     renderPlanner();
+    renderPrep();
     renderTips();
 }
 
