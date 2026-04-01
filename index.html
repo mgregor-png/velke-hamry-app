@@ -1340,13 +1340,15 @@ const weatherRef = db.ref('weather');
 
 async function loadWeather() {
     // Check Firebase cache first
-    const snap = await weatherRef.once('value');
-    const cached = snap.val();
-    if (cached && cached.ts && (Date.now() - cached.ts < 12 * 60 * 60 * 1000)) {
-        weatherByDate = cached.data || {};
-        renderPlanner();
-        return;
-    }
+    try {
+        const snap = await weatherRef.once('value');
+        const cached = snap.val();
+        if (cached && cached.ts && cached.data && Object.keys(cached.data).length > 0 && (Date.now() - cached.ts < 12 * 60 * 60 * 1000)) {
+            weatherByDate = cached.data;
+            renderPlanner();
+            return;
+        }
+    } catch (e) { /* Firebase read failed, fetch fresh */ }
     // Stale or missing — fetch fresh
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.72&longitude=15.32&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode&timezone=Europe/Prague&forecast_days=7');
@@ -1370,17 +1372,13 @@ async function loadWeather() {
 }
 
 function getWeatherForDayKey(dayKey) {
-    // Map day keys to upcoming dates
-    const now = new Date();
     const dayMap = { 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6, 'sun': 0 };
     const target = dayMap[dayKey];
     if (target === undefined) return null;
-    for (let i = 0; i < 7; i++) {
-        const d = new Date(now); d.setDate(now.getDate() + i);
-        if (d.getDay() === target) {
-            const key = d.toISOString().split('T')[0];
-            return weatherByDate[key] || null;
-        }
+    // Search all available weather dates for matching day-of-week
+    for (const dateStr of Object.keys(weatherByDate)) {
+        const d = new Date(dateStr + 'T12:00:00');
+        if (d.getDay() === target) return weatherByDate[dateStr];
     }
     return null;
 }
