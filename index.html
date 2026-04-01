@@ -788,18 +788,15 @@ function saveUserData(data) {
 dataRef.on('value', (snapshot) => {
     const val = snapshot.val();
     if (val) {
+        // Merge Firebase data into local state (Firebase is source of truth)
         _sharedData = val;
         ensureUserData();
+        // Also update localStorage as offline backup
+        localStorage.setItem('vh-planner', JSON.stringify(_sharedData));
     } else if (!_firebaseReady) {
-        // First load — seed from localStorage if Firebase is empty
-        try {
-            const local = JSON.parse(localStorage.getItem('vh-planner') || '{}');
-            if (local && (Object.keys(local.ratings || {}).length > 0 || Object.keys(local.days || {}).length > 0)) {
-                _sharedData = local;
-                ensureUserData();
-                dataRef.set(_sharedData);
-            }
-        } catch (e) {}
+        // Room is completely empty — initialize it
+        ensureUserData();
+        dataRef.set(_sharedData);
     }
     _firebaseReady = true;
     renderAll();
