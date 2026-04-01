@@ -67,22 +67,70 @@ tailwind.config = {
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Cards */
     .trail-card { transition: opacity 0.3s ease, transform 0.3s ease; }
     .trail-card.hidden-by-filter { display: none; }
     .trail-card.highlighted { box-shadow: 0 0 0 3px #384b38; }
-    .detail-section { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease; opacity: 0; }
-    .detail-section.open { max-height: 600px; opacity: 1; }
-    .detail-toggle .chevron { transition: transform 0.3s ease; }
+
+    /* Detail expand */
+    .detail-section { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; opacity: 0; }
+    .detail-section.open { max-height: 800px; opacity: 1; }
+    .detail-toggle .chevron { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .detail-toggle.open .chevron { transform: rotate(180deg); }
+
+    /* Map & Nav */
     #leaflet-map { z-index: 1; }
     .leaflet-control-zoom { display: none; }
+    .nav-item { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
     .nav-item.active { background: #e5e2da; color: #384b38; border-radius: 0.75rem; }
+
+    /* Sections — fade in */
     .section { display: none; }
-    .section.active { display: block; }
+    .section.active { display: block; animation: fadeIn 0.3s ease-out; }
+
+    /* Carousel */
     .carousel { will-change: transform; }
     @media (max-width: 768px) {
         .carousel + button, .carousel ~ button { opacity: 1 !important; }
     }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes staggerIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .stagger-in { animation: staggerIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+    /* Thumb button press */
+    .thumb-press { animation: thumbPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes thumbPop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+    }
+
+    /* Filter pill activation */
+    .filter-pill { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    /* Card hover lift */
+    .trail-card { transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; }
+    @media (hover: hover) {
+        .trail-card:hover { transform: translateY(-2px); box-shadow: 0px 16px 40px rgba(28,28,23,0.1); }
+    }
+
+    /* Checkbox check animation */
+    input[type="checkbox"] { transition: all 0.15s ease; }
+    input[type="checkbox"]:checked { animation: checkPop 0.2s ease; }
+    @keyframes checkPop {
+        50% { transform: scale(1.2); }
+    }
+
+    /* Smooth select focus */
+    select { transition: background-color 0.2s ease; }
 </style>
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen pb-24">
@@ -776,6 +824,7 @@ function setRating(cardId, value) {
             else btn.classList.add('bg-surface-container-high', 'text-on-surface-variant', 'hover:bg-surface-container-highest');
             const icon = btn.querySelector('.material-symbols-outlined');
             if (icon) icon.style.fontVariationSettings = isActive ? "'FILL' 1" : "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24";
+            if (isActive) { btn.classList.add('thumb-press'); setTimeout(() => btn.classList.remove('thumb-press'), 300); }
         });
     }
     renderPlanner();
@@ -808,7 +857,11 @@ function renderCards() {
     for (const [cat, cards] of Object.entries(cats)) {
         html += `<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-primary ${cat !== 'recommended' ? 'mt-8' : ''} mb-4 sm:mb-6 flex items-center gap-3">
             ${t('cat.' + cat)}<span class="h-px flex-1 bg-outline-variant/20"></span></h2>`;
-        html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">${cards.map(renderCard).join('')}</div>`;
+        let idx = 0;
+        html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">${cards.map(c => {
+            const card = renderCard(c);
+            return card.replace('class="trail-card', `style="animation-delay:${idx++ * 60}ms" class="trail-card stagger-in`);
+        }).join('')}</div>`;
     }
     document.getElementById('cards-root').innerHTML = html;
 }
