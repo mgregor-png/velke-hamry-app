@@ -1336,25 +1336,18 @@ document.addEventListener('touchend', e => {
 const WMO = { 0:['wb_sunny','Jasno','Clear'],1:['wb_sunny','Skoro jasno','Mostly clear'],2:['cloud','Polojasno','Partly cloudy'],3:['cloud','Zataženo','Overcast'],45:['foggy','Mlha','Fog'],48:['foggy','Námraza','Rime fog'],51:['grain','Mrholení','Drizzle'],53:['grain','Mrholení','Drizzle'],55:['grain','Mrholení','Heavy drizzle'],61:['rainy','Slabý déšť','Light rain'],63:['rainy','Déšť','Rain'],65:['rainy','Silný déšť','Heavy rain'],71:['ac_unit','Sníh','Snow'],73:['ac_unit','Sníh','Snow'],75:['ac_unit','Husté sněžení','Heavy snow'],80:['rainy','Přeháňky','Showers'],81:['rainy','Silné přeháňky','Heavy showers'],82:['thunderstorm','Lijáky','Violent showers'],95:['thunderstorm','Bouřka','Thunderstorm'],96:['thunderstorm','Bouřka','T-storm + hail'],99:['thunderstorm','Silná bouřka','Heavy T-storm'] };
 let weatherByDate = {}; // keyed by YYYY-MM-DD
 
-function shouldRefreshWeather() {
-    const lastFetch = localStorage.getItem('vh-weather-ts');
-    if (!lastFetch) return true;
-    const elapsed = Date.now() - parseInt(lastFetch);
-    return elapsed > 12 * 60 * 60 * 1000; // 12 hours
-}
+const weatherRef = db.ref('weather');
 
 async function loadWeather() {
-    // Use cached weather if fresh enough
-    if (!shouldRefreshWeather()) {
-        try {
-            const cached = JSON.parse(localStorage.getItem('vh-weather'));
-            if (cached && Object.keys(cached).length > 0) {
-                weatherByDate = cached;
-                renderPlanner();
-                return;
-            }
-        } catch (e) {}
+    // Check Firebase cache first
+    const snap = await weatherRef.once('value');
+    const cached = snap.val();
+    if (cached && cached.ts && (Date.now() - cached.ts < 12 * 60 * 60 * 1000)) {
+        weatherByDate = cached.data || {};
+        renderPlanner();
+        return;
     }
+    // Stale or missing — fetch fresh
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.72&longitude=15.32&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode&timezone=Europe/Prague&forecast_days=7');
         const data = await res.json();
@@ -1371,8 +1364,7 @@ async function loadWeather() {
                 code
             };
         }
-        localStorage.setItem('vh-weather', JSON.stringify(weatherByDate));
-        localStorage.setItem('vh-weather-ts', Date.now().toString());
+        weatherRef.set({ data: weatherByDate, ts: Date.now() });
         renderPlanner(); // re-render with weather data
     } catch (e) { /* weather will just not show */ }
 }
